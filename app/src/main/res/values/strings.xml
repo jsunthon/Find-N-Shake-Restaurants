@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Random Restaurant Shake</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="title_activity_detail">Restaurant Activity</string>
+    <string name="hello_world">Hello World!</string>
+</resources>
