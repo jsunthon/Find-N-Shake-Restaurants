@@ -1,4 +1,4 @@
-package com.bignerdranch.android.hw1_movie_reviews;
+package com.bignerdranch.android.randomrestaurants;
 
 import android.content.Intent;
 import android.support.v4.app.Fragment;

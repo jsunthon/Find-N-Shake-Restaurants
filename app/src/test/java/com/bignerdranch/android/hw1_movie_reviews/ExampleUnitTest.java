@@ -1,4 +1,4 @@
-package com.bignerdranch.android.hw1_movie_reviews;
+package com.bignerdranch.android.randomrestaurants;
 
 import org.junit.Test;
 
