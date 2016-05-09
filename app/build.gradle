@@ -20,13 +20,20 @@ android {
 
     buildTypes.each {
         it.buildConfigField 'String', 'NYT_MOVIE_REVIEWS_API_KEY', NYTMovieReviewsApiKey
+        it.buildConfigField 'String', 'YELP_CONSUMER_KEY', YelpConsKey
+        it.buildConfigField 'String', 'YELP_CONSUMER_SECRET', YelpConsSec
+        it.buildConfigField 'String', 'YELP_TOKEN', YelpToken
+        it.buildConfigField 'String', 'YELP_TOKEN_SECRET', YelpTokenSecret
     }
 
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
+    compile 'junit:junit:4.12'
+    compile 'org.scribe:scribe:1.3.7'
+    compile 'com.googlecode.json-simple:json-simple:1.1.1'
+
 }

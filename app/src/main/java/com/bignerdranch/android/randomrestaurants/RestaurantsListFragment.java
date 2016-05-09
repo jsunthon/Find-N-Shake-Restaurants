@@ -1,7 +1,6 @@
 package com.bignerdranch.android.randomrestaurants;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -20,24 +19,69 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.scribe.builder.ServiceBuilder;
+import org.scribe.model.OAuthRequest;
+import org.scribe.model.Response;
+import org.scribe.model.Token;
+import org.scribe.model.Verb;
+import org.scribe.oauth.OAuthService;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class RestaurantsListFragment extends Fragment {
 
+    //YELP API STUFF
+    private static final String API_HOST = "api.yelp.com";
+    private static final String DEFAULT_TERM = "restaurants";
+    private static final String DEFAULT_LOCATION = "90706";
+    private static final int DEFAULT_RADIUS = 32000; //in meters
+    private static final int SEARCH_LIMIT = 20;
+    private static final String SEARCH_PATH = "/v2/search";
+    OAuthService service;
+    Token accessToken;
+
     private ArrayAdapter<String> mRestaurantsAdapter;
 
+    //loggers
+    private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
+    private final String LOG_TAG_RESTAURANT_LIST = this.getClass().getSimpleName();
+
+    /**
+     * Set up the yelp api oauth credentials.
+     */
     public RestaurantsListFragment() {
+        this.service = new ServiceBuilder().provider(TwoStepOAuth.class)
+                .apiKey(BuildConfig.YELP_CONSUMER_KEY)
+                .apiSecret(BuildConfig.YELP_CONSUMER_SECRET).build();
+        this.accessToken = new Token(BuildConfig.YELP_TOKEN, BuildConfig.YELP_TOKEN_SECRET);
+    }
+
+    private OAuthRequest createOAuthRequest(String path) {
+        OAuthRequest request = new OAuthRequest(Verb.GET, "https://" + API_HOST + path);
+        return request;
+    }
+
+    //returns JSON response
+    private String sendRequestAndGetResponse(OAuthRequest request) {
+        Log.v(LOG_TAG_FETCH_TASK, request.getCompleteUrl());
+        this.service.signRequest(this.accessToken, request);
+        Response response = request.send();
+        return response.getBody();
+    }
+
+    public String searchForRestaurantsByLocation(String term, String location, double miles) {
+        OAuthRequest request = createOAuthRequest(SEARCH_PATH);
+        request.addQuerystringParameter("term", term);
+        request.addQuerystringParameter("location", location);
+        request.addQuerystringParameter("limit", String.valueOf(SEARCH_LIMIT));
+        String stringMiles = Double.toString(convertMilesToMeters(20));
+        request.addQuerystringParameter("radius_filter", stringMiles);
+        return sendRequestAndGetResponse(request);
     }
 
     @Override
@@ -57,9 +101,6 @@ public class RestaurantsListFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
@@ -76,8 +117,8 @@ public class RestaurantsListFragment extends Fragment {
         List<String> movieReviews = new ArrayList<String>(Arrays.asList(data));
         mRestaurantsAdapter = new ArrayAdapter<String>(
                 getActivity(),
-                R.layout.list_item_review,
-                R.id.list_item_review_textview,
+                R.layout.list_item_restaurant,
+                R.id.list_item_restaurant_textview,
                 movieReviews);
 
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
@@ -99,109 +140,52 @@ public class RestaurantsListFragment extends Fragment {
     }
 
     public class FetchRestaurantsTask extends AsyncTask<Void, Void, String[]> {
-        private final String LOG_TAG = FetchRestaurantsTask.class.getSimpleName();
 
-        //get the movie data (titles for now) from the jsonStr passed in and popoulate titles
-        protected String[] getMovieDataFromJson(String movieReviewsJsonStr) throws JSONException {
+        protected String[] getYelpDataFromJson(String yelpDataJsonStr) throws JSONException {
 
             //json keys
-            final String NYTMV_RESULTS = "results";
-            final String NYTMV_TITLE = "display_title";
+            final String YELP_BUSINESSES = "businesses";
+            final String YELP_BUSINESS_NAME = "name";
 
-            JSONObject reviewJson = new JSONObject(movieReviewsJsonStr);
-            JSONArray resultsArray = reviewJson.getJSONArray(NYTMV_RESULTS);
-            String[] titleStrs = new String[20];
-            for (int i = 0; i < resultsArray.length(); i++) {
-                JSONObject review = resultsArray.getJSONObject(i);
-                String title = review.getString(NYTMV_TITLE);
-                Log.v(LOG_TAG, "Got title: " + title);
-                titleStrs[i] = title;
+            JSONObject response = new JSONObject(yelpDataJsonStr);
+            JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
+            String[] restaurants = new String[20];
+            for (int i = 0; i < businesses.length(); i++) {
+                JSONObject business = businesses.getJSONObject(i);
+                String restaurantName = business.getString(YELP_BUSINESS_NAME);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
+                restaurants[i] = restaurantName;
             }
-
-            return titleStrs;
+            return restaurants;
         }
 
         @Override
         protected String[] doInBackground(Void... params) {
-            System.out.println("Hello");
-            HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
 
-            String reviewJsonStr = null;
-
+            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, DEFAULT_LOCATION, DEFAULT_RADIUS);
+            System.out.println("YELP STR" + yelpDataJsonStr.length());
+            String[] yelpRestaurants = null;
             try {
-                final String REVIEWS_BASE_URL = "http://api.nytimes.com/svc/movies/v2/reviews/search.json?";
-                final String THOUSAND_BEST_PARAM = "thousand-best";
-                final String API_KEY_PARAM = "api-key";
-
-                Uri builtUri = Uri.parse(REVIEWS_BASE_URL).buildUpon()
-                        .appendQueryParameter(THOUSAND_BEST_PARAM, "Y")
-                        .appendQueryParameter(API_KEY_PARAM, BuildConfig.NYT_MOVIE_REVIEWS_API_KEY)
-                        .build();
-
-                URL url = new URL(builtUri.toString());
-                Log.v(LOG_TAG, "Built URI " + builtUri.toString());
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream input = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-
-                if (input == null) {
-                    return null;
-                }
-
-                reader = new BufferedReader(new InputStreamReader(input));
-
-                String line;
-
-                while ((line = reader.readLine()) != null) {
-                    buffer.append(line + "\n");
-                }
-
-                if (buffer.length() == 0) {
-                    return null;
-                }
-
-                reviewJsonStr = buffer.toString();
-
-                Log.v(LOG_TAG, "Movie Review string: " + reviewJsonStr);
-            } catch (IOException e) {
-                Log.e(LOG_TAG, "Error", e);
-                return null;
-            } finally {
-                if (urlConnection != null) {
-                    urlConnection.disconnect();
-                }
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
-                    }
-                }
-            }
-
-            try {
-                return getMovieDataFromJson(reviewJsonStr);
+                yelpRestaurants = getYelpDataFromJson(yelpDataJsonStr);
             } catch (JSONException e) {
-                Log.e(LOG_TAG, e.getMessage(), e);
-                e.printStackTrace();
+                Log.v(LOG_TAG_FETCH_TASK, "failed to parse json");
             }
-
-            return null;
+            return yelpRestaurants;
         }
 
         @Override
-        protected void onPostExecute(String[] titles) {
-            if (titles != null && titles.length != 0) {
+        protected void onPostExecute(String[] restaurants) {
+            if (restaurants != null && restaurants.length != 0) {
                 mRestaurantsAdapter.clear();
-                for (String title : titles) {
-                    mRestaurantsAdapter.add(title);
+                for (String restaurant : restaurants) {
+                    mRestaurantsAdapter.add(restaurant);
                 }
             }
         }
+    }
+
+    //helper methods
+    public double convertMilesToMeters(double miles) {
+        return miles * 1609.344;
     }
 }
