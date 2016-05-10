@@ -15,11 +15,14 @@
  */
 package com.bignerdranch.android.randomrestaurants;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
@@ -30,7 +33,9 @@ import android.preference.PreferenceManager;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends PreferenceActivity
-        implements Preference.OnPreferenceChangeListener {
+       implements Preference.OnPreferenceChangeListener{
+
+    private final String LOG_TAG = this.getClass().getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,4 +83,5 @@ public class SettingsActivity extends PreferenceActivity
         }
         return true;
     }
+
 }
