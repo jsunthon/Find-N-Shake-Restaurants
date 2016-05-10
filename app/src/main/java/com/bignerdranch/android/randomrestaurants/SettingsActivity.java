@@ -22,7 +22,11 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
@@ -34,12 +38,13 @@ import android.util.Log;
  */
 public class SettingsActivity extends PreferenceActivity
        implements Preference.OnPreferenceChangeListener{
-
+    private AppCompatDelegate mDelegate;
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         // Add 'general' preferences, defined in the XML file
         addPreferencesFromResource(R.xml.pref_general);
 

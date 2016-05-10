@@ -118,7 +118,7 @@ public class RestaurantsListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.reviews_fragment, menu);
+        inflater.inflate(R.menu.restaurant_list_fragment, menu);
     }
 
     @Override
