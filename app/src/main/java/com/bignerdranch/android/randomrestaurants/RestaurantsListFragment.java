@@ -285,6 +285,9 @@ public class RestaurantsListFragment extends Fragment {
     private String parseFilter(HashMap<String, Integer> categoryFilter) {
         String filterCategories = ""; //start empty
         List<String> filterList = generateFilterList(categoryFilter);
+        if (filterList.size() == 0) {
+            return generateRandomFilter();
+        }
         for (String filter: filterList) {
             filterCategories += filter;
             if (filterList.indexOf(filter) != filterList.size() - 1) {
@@ -302,6 +305,9 @@ public class RestaurantsListFragment extends Fragment {
      */
     private String parseRandomizedFilter(HashMap<String, Integer> categoryFilter) {
         List<String> filterList = generateFilterList(categoryFilter);
+        if (filterList.size() == 0) {
+            return generateRandomFilter();
+        }
         Random randomGenerator = new Random();
         int index = randomGenerator.nextInt(filterList.size());
         String filterCategory = filterList.get(index);
@@ -315,13 +321,20 @@ public class RestaurantsListFragment extends Fragment {
      */
     private List<String> generateFilterList(HashMap<String, Integer> categoryFilter) {
         List<String> filterList = new ArrayList<>();
-
         for (Map.Entry<String, Integer> entry : categoryFilter.entrySet()) {
             if (entry.getValue() == 1) {
                 filterList.add(entry.getKey());
             }
         }
         return filterList;
+    }
+
+    //return a random category to search for. used when the user hasn't indicated any filtering options
+    private String generateRandomFilter() {
+        Random random = new Random();
+        int index = random.nextInt(categories.length);
+        String randomCategory = categories[index];
+        return randomCategory;
     }
 
     //Get the value of the location preference
