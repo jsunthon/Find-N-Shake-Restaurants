@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.bignerdranch.android.randomrestaurants"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="com.bignerdranch.android.randomrestaurants"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -21,7 +22,15 @@
         <activity
             android:name="com.bignerdranch.android.randomrestaurants.RestaurantActivity"
             android:label="@string/title_activity_detail"
-            android:parentActivityName="com.bignerdranch.android.randomrestaurants.RestaurantListActivity" >
+            android:parentActivityName="com.bignerdranch.android.randomrestaurants.RestaurantListActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bignerdranch.android.randomrestaurants.RestaurantListActivity"/>
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".RestaurantListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bignerdranch.android.randomrestaurants.RestaurantListActivity"/>
