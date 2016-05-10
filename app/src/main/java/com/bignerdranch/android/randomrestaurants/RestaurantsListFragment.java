@@ -45,6 +45,7 @@ public class RestaurantsListFragment extends Fragment {
     OAuthService service;
     Token accessToken;
 
+    private boolean chineseChecked = false;
     private ArrayAdapter<String> mRestaurantsAdapter;
 
     String[] categories = {
@@ -54,6 +55,8 @@ public class RestaurantsListFragment extends Fragment {
             "french", "thai", "steak", "latin",
             "seafood", "italian", "greek"
     };
+
+    protected static boolean categoriesChanged = false;
 
     //loggers
     private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
