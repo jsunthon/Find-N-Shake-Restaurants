@@ -202,7 +202,6 @@ public class RestaurantsListFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-
     private void updateUI() {
         RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
         List<Restaurant> restaurants = restaurantLab.getRestaurants();
@@ -268,6 +267,10 @@ public class RestaurantsListFragment extends Fragment {
             //json keys
             final String YELP_BUSINESSES = "businesses";
             final String YELP_BUSINESS_NAME = "name";
+            final String YELP_PHONE = "display_phone";
+            final String YELP_RATING = "rating";
+            final String YELP_LOCATION = "location";
+            final String YELP_ADDRESS = "display_address";
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
@@ -275,8 +278,13 @@ public class RestaurantsListFragment extends Fragment {
             for (int i = 0; i < businesses.length(); i++) {
                 JSONObject business = businesses.getJSONObject(i);
                 String restaurantName = business.getString(YELP_BUSINESS_NAME);
+                String restaurantPhone = business.getString(YELP_PHONE);
+                double restaurantRating = business.getDouble(YELP_RATING);
+                JSONObject restaurantLocation = business.getJSONObject(YELP_LOCATION);
+                JSONArray restaurantAddrComp = restaurantLocation.getJSONArray(YELP_ADDRESS);
+                String restaurantAddress = parseAddress(restaurantAddrComp);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
-                restaurantLab.addRestaurant(new Restaurant(restaurantName, "123", 5, "nowhere"));
+                restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone, restaurantRating, restaurantAddress));
             }
         }
 
@@ -400,6 +408,17 @@ public class RestaurantsListFragment extends Fragment {
     private String getLocationPref() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         return sharedPref.getString("location", "");
+    }
+
+    private String parseAddress(JSONArray jsonAddress) throws JSONException {
+        String address = "";
+        for (int i = 0; i < jsonAddress.length(); i++) {
+            address += jsonAddress.getString(i);
+            if (i != jsonAddress.length() - 1) {
+                address += ", ";
+            }
+        }
+        return address;
     }
 
     //handle shake events

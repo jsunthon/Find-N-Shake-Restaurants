@@ -11,13 +11,13 @@ public class Restaurant {
     private String name;
     private String address;
     private String phone;
-    private int rating;
+    private double rating;
     private String categories;
     private String imageUrl;
     private double latitude;
     private double longitude;
 
-    public Restaurant(String name, String phone, int rating, String address) {
+    public Restaurant(String name, String phone, double rating, String address) {
         mId = UUID.randomUUID(); //random ID for a restaurant is auto generated
         this.name = name;
         this.phone = phone;
@@ -89,11 +89,11 @@ public class Restaurant {
         this.phone = phone;
     }
 
-    public int getRating() {
+    public double getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(double rating) {
         this.rating = rating;
     }
 }
