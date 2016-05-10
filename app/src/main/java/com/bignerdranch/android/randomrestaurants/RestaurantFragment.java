@@ -8,10 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bignerdranch.android.models.Restaurant;
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class RestaurantFragment extends Fragment {
+
+    private Restaurant restaurant;
 
     public RestaurantFragment() {
     }
