@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,7 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
@@ -63,7 +67,10 @@ public class RestaurantsListFragment extends Fragment {
     private Token accessToken;
 
     //adapter for the list view
-    private ArrayAdapter<Restaurant> mRestaurantsAdapter;
+    private RecyclerView mRestaurantRecyclerView;
+    private RestaurantAdapter mAdapter; //adapter for the restaurantrecycerview
+    private LinearLayout mLinearLayout; //used for the recycler view
+
 
     //contain a mapping of categories vs checked , e.g. "chinese : 1" means chinese checked
     public HashMap<String, Integer> categoryFilter = new HashMap<>();
@@ -141,6 +148,20 @@ public class RestaurantsListFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Log.v(LOG_TAG_RESTAURANT_LIST, "onCreateView called");
+
+        View view = inflater.inflate(R.layout.fragment_restaurant_list, container, false);
+
+        mLinearLayout = (LinearLayout) view.findViewById(R.id.default_linear_layout);
+        mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurant_recycler_view);
+        mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        updateUI();
+        return view;
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         Log.v(LOG_TAG_RESTAURANT_LIST, "on Start called");
@@ -181,34 +202,62 @@ public class RestaurantsListFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.v(LOG_TAG_RESTAURANT_LIST, "onCreateView called");
-        Restaurant[] data = {};
-        List<Restaurant> restaurants = new ArrayList<Restaurant>(Arrays.asList(data));
-        mRestaurantsAdapter = new ArrayAdapter<Restaurant>(
-                getActivity(),
-                R.layout.list_item_restaurant,
-                R.id.list_item_restaurant_textview,
-                restaurants);
 
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_reviews);
-        listView.setAdapter(mRestaurantsAdapter);
+    private void updateUI() {
+        RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
+        List<Restaurant> restaurants = restaurantLab.getRestaurants();
 
-        //set the listener for each list item
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        Log.v(LOG_TAG_RESTAURANT_LIST, "Size: " + restaurants.size());
+        mAdapter = new RestaurantAdapter(restaurants);
+        mRestaurantRecyclerView.setAdapter(mAdapter);
+    }
 
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Restaurant restaurant = mRestaurantsAdapter.getItem(position);
-                Intent intent = RestaurantActivity.newIntent(getActivity(), restaurant.getId());
-                startActivity(intent);
-            }
-        });
+    private class RestaurantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView mRestaurantNameTextView;
 
-        return rootView;
+        private Restaurant mRestaurant;
+
+        public RestaurantHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mRestaurantNameTextView = (TextView) itemView.findViewById(R.id.list_item_restaurant_textview);
+        }
+
+        public void bindRestaurant(Restaurant restaurant) {
+            mRestaurant = restaurant;
+            mRestaurantNameTextView.setText(mRestaurant.getName());
+        }
+        @Override
+        public void onClick(View v) {
+            Intent intent = RestaurantActivity.newIntent(getActivity(), mRestaurant.getId());
+            startActivity(intent);
+        }
+    }
+
+    private class RestaurantAdapter extends RecyclerView.Adapter<RestaurantHolder> {
+        private List<Restaurant> mRestaurants;
+
+        public RestaurantAdapter(List<Restaurant> restaurants) {
+            mRestaurants = restaurants;
+        }
+
+        @Override
+        public RestaurantHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.list_item_restaurant, parent, false);
+            return new RestaurantHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(RestaurantHolder holder, int position) {
+            Restaurant restaurant = mRestaurants.get(position);
+            holder.bindRestaurant(restaurant);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mRestaurants.size();
+        }
     }
 
     public class FetchRestaurantsTask extends AsyncTask<Object, Void, Void> {
@@ -248,11 +297,7 @@ public class RestaurantsListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            mRestaurantsAdapter.clear();
-            List<Restaurant> restaurants = restaurantLab.getRestaurants();
-            for (Restaurant restaurant: restaurants) {
-                mRestaurantsAdapter.add(restaurant);
-            }
+            updateUI();
         }
     }
 
