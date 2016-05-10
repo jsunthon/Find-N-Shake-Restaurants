@@ -9,6 +9,8 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,11 +20,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import com.bignerdranch.android.models.Restaurant;
+import com.bignerdranch.android.models.RestaurantLab;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,7 +67,10 @@ public class RestaurantsListFragment extends Fragment {
     private Token accessToken;
 
     //adapter for the list view
-    private ArrayAdapter<String> mRestaurantsAdapter;
+    private RecyclerView mRestaurantRecyclerView;
+    private RestaurantAdapter mAdapter; //adapter for the restaurantrecycerview
+    private LinearLayout mLinearLayout; //used for the recycler view
+
 
     //contain a mapping of categories vs checked , e.g. "chinese : 1" means chinese checked
     public HashMap<String, Integer> categoryFilter = new HashMap<>();
@@ -103,9 +114,10 @@ public class RestaurantsListFragment extends Fragment {
 
     /**
      * Construct a search query, then execute it
-     * @param term Search for a term. Can be restaurants, businesses, or any term that Yelp allows
-     * @param location Location within the search should be contained
-     * @param miles Specify a radius in miles within the search should be contained
+     *
+     * @param term           Search for a term. Can be restaurants, businesses, or any term that Yelp allows
+     * @param location       Location within the search should be contained
+     * @param miles          Specify a radius in miles within the search should be contained
      * @param categoryFilter Specify which restaurant categories to search. Comma delimited string
      * @return JSON string that represents the YELP API response
      */
@@ -126,12 +138,33 @@ public class RestaurantsListFragment extends Fragment {
         setUpShake();
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+        Log.v(LOG_TAG_RESTAURANT_LIST, "on Create called");
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
         populateCategoryFilter(categories);
         String categoryFilterString = parseFilter(categoryFilter);
         printFilters(categoryFilter);
         LOCATION = getLocationPref();
         reviewsTask.execute(categoryFilterString);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Log.v(LOG_TAG_RESTAURANT_LIST, "onCreateView called");
+
+        View view = inflater.inflate(R.layout.fragment_restaurant_list, container, false);
+
+        mLinearLayout = (LinearLayout) view.findViewById(R.id.default_linear_layout);
+        mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurant_recycler_view);
+        mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        updateUI();
+        return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(LOG_TAG_RESTAURANT_LIST, "on Start called");
     }
 
     @Override
@@ -169,79 +202,110 @@ public class RestaurantsListFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        String[] data = {};
-        List<String> movieReviews = new ArrayList<String>(Arrays.asList(data));
-        mRestaurantsAdapter = new ArrayAdapter<String>(
-                getActivity(),
-                R.layout.list_item_restaurant,
-                R.id.list_item_restaurant_textview,
-                movieReviews);
+    private void updateUI() {
+        RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
+        List<Restaurant> restaurants = restaurantLab.getRestaurants();
 
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_reviews);
-        listView.setAdapter(mRestaurantsAdapter);
-
-        //set the listener for each list item
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String title = mRestaurantsAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), RestaurantActivity.class).putExtra(Intent.EXTRA_TEXT, title);
-                startActivity(intent);
-            }
-        });
-
-        return rootView;
+        Log.v(LOG_TAG_RESTAURANT_LIST, "Size: " + restaurants.size());
+        mAdapter = new RestaurantAdapter(restaurants);
+        mRestaurantRecyclerView.setAdapter(mAdapter);
     }
 
-    public class FetchRestaurantsTask extends AsyncTask<Object, Void, String[]> {
+    private class RestaurantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private TextView mRestaurantNameTextView;
 
-        protected String[] getYelpDataFromJson(String yelpDataJsonStr) throws JSONException {
+        private Restaurant mRestaurant;
+
+        public RestaurantHolder(View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(this);
+            mRestaurantNameTextView = (TextView) itemView.findViewById(R.id.list_item_restaurant_textview);
+        }
+
+        public void bindRestaurant(Restaurant restaurant) {
+            mRestaurant = restaurant;
+            mRestaurantNameTextView.setText(mRestaurant.getName());
+        }
+        @Override
+        public void onClick(View v) {
+            Intent intent = RestaurantActivity.newIntent(getActivity(), mRestaurant.getId());
+            startActivity(intent);
+        }
+    }
+
+    private class RestaurantAdapter extends RecyclerView.Adapter<RestaurantHolder> {
+        private List<Restaurant> mRestaurants;
+
+        public RestaurantAdapter(List<Restaurant> restaurants) {
+            mRestaurants = restaurants;
+        }
+
+        @Override
+        public RestaurantHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            View view = layoutInflater.inflate(R.layout.list_item_restaurant, parent, false);
+            return new RestaurantHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(RestaurantHolder holder, int position) {
+            Restaurant restaurant = mRestaurants.get(position);
+            holder.bindRestaurant(restaurant);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mRestaurants.size();
+        }
+    }
+
+    public class FetchRestaurantsTask extends AsyncTask<Object, Void, Void> {
+        private RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
+
+        protected void getYelpDataFromJson(String yelpDataJsonStr) throws JSONException {
 
             //json keys
             final String YELP_BUSINESSES = "businesses";
             final String YELP_BUSINESS_NAME = "name";
+            final String YELP_PHONE = "display_phone";
+            final String YELP_RATING = "rating";
+            final String YELP_LOCATION = "location";
+            final String YELP_ADDRESS = "display_address";
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
-            String[] restaurants = new String[20];
+
             for (int i = 0; i < businesses.length(); i++) {
                 JSONObject business = businesses.getJSONObject(i);
                 String restaurantName = business.getString(YELP_BUSINESS_NAME);
+                String restaurantPhone = business.getString(YELP_PHONE);
+                double restaurantRating = business.getDouble(YELP_RATING);
+                JSONObject restaurantLocation = business.getJSONObject(YELP_LOCATION);
+                JSONArray restaurantAddrComp = restaurantLocation.getJSONArray(YELP_ADDRESS);
+                String restaurantAddress = parseAddress(restaurantAddrComp);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
-                restaurants[i] = restaurantName;
+                restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone, restaurantRating, restaurantAddress));
             }
-            return restaurants;
         }
 
         @Override
-        protected String[] doInBackground(Object... params) {
+        protected Void doInBackground(Object... params) {
             String filterCategories = (String) params[0];
             Log.v(LOG_TAG_FETCH_TASK, "Categories to search: " + filterCategories);
             String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_SEARCH_RADIUS, filterCategories);
             Log.v(LOG_TAG_FETCH_TASK, "YELP STR" + yelpDataJsonStr.length());
-
-            String[] yelpRestaurants = null;
+            restaurantLab.resetRestaurants();
             try {
-                yelpRestaurants = getYelpDataFromJson(yelpDataJsonStr);
+                getYelpDataFromJson(yelpDataJsonStr);
             } catch (JSONException e) {
                 Log.v(LOG_TAG_FETCH_TASK, "failed to parse json");
             }
-            return yelpRestaurants;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String[] restaurants) {
-            if (restaurants != null && restaurants.length != 0) {
-                mRestaurantsAdapter.clear();
-                for (String restaurant : restaurants) {
-                    mRestaurantsAdapter.add(restaurant);
-                }
-            }
+        protected void onPostExecute(Void result) {
+            updateUI();
         }
     }
 
@@ -252,7 +316,7 @@ public class RestaurantsListFragment extends Fragment {
 
     private void validatePrefs(String[] keys) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        for (String key: keys) {
+        for (String key : keys) {
             boolean isChecked = sharedPref.getBoolean(key, false);
             Log.v(LOG_TAG_RESTAURANT_LIST, key + "checked: " + isChecked);
         }
@@ -260,7 +324,7 @@ public class RestaurantsListFragment extends Fragment {
 
     private void populateCategoryFilter(String[] keys) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        for (String key: keys) {
+        for (String key : keys) {
             boolean isChecked = sharedPref.getBoolean(key, false);
             if (isChecked) {
                 categoryFilter.put(key, 1);
@@ -279,6 +343,7 @@ public class RestaurantsListFragment extends Fragment {
     /**
      * Generate a non-random set of categories of restaurants
      * that are enabled in settings
+     *
      * @param categoryFilter contains key, value pairs specifying which categories are checked
      * @return a string containing the categories to filter, e.g. "french, chinese, mexican"
      */
@@ -288,7 +353,7 @@ public class RestaurantsListFragment extends Fragment {
         if (filterList.size() == 0) {
             return generateRandomFilter();
         }
-        for (String filter: filterList) {
+        for (String filter : filterList) {
             filterCategories += filter;
             if (filterList.indexOf(filter) != filterList.size() - 1) {
                 filterCategories += ",";
@@ -300,6 +365,7 @@ public class RestaurantsListFragment extends Fragment {
     /**
      * Generate a random category of restaurants
      * that are enabled in settings
+     *
      * @param categoryFilter contains key, value pairs specifying which categories are checked
      * @return a string containing one random category
      */
@@ -316,6 +382,7 @@ public class RestaurantsListFragment extends Fragment {
 
     /**
      * Generate a list containing the categories that are checked in Settings
+     *
      * @param categoryFilter contains key, value pairs specifying which categories are checked
      * @return a list specifying the categories that are checked
      */
@@ -341,6 +408,17 @@ public class RestaurantsListFragment extends Fragment {
     private String getLocationPref() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         return sharedPref.getString("location", "");
+    }
+
+    private String parseAddress(JSONArray jsonAddress) throws JSONException {
+        String address = "";
+        for (int i = 0; i < jsonAddress.length(); i++) {
+            address += jsonAddress.getString(i);
+            if (i != jsonAddress.length() - 1) {
+                address += ", ";
+            }
+        }
+        return address;
     }
 
     //handle shake events
