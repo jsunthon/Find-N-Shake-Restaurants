@@ -81,14 +81,7 @@ public class SettingsActivity extends PreferenceActivity
             // For other preferences, set the summary to the value's simple string representation.
             preference.setSummary(stringValue);
         }
-        restartActivity();
         return true;
     }
 
-    private void restartActivity() {
-        Log.d(LOG_TAG, "Restart activity " + this);
-        Intent intent = getIntent();
-        startActivity(intent);
-        finish();
-    }
 }
