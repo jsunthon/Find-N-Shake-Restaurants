@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bignerdranch.android.models.Restaurant;
+import com.bignerdranch.android.models.RestaurantLab;
+
+import java.util.UUID;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -25,11 +28,13 @@ public class RestaurantFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
 
-        Intent intent = getActivity().getIntent();
-        if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
-            String title = intent.getStringExtra(Intent.EXTRA_TEXT);
-            ((TextView) rootView.findViewById(R.id.detail_text)).setText(title);
-        }
+        UUID restaurantId = (UUID) getActivity().getIntent().getSerializableExtra(RestaurantActivity.EXTRA_RESTAURANT_ID);
+        restaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
+//        if (intent != null && intent.hasExtra(EXTRA_RESTAURANT_ID, )) {
+//            String title = intent.getStringExtra(Intent.EXTRA_TEXT);
+//            ((TextView) rootView.findViewById(R.id.detail_text)).setText(title);
+//        }
+        ((TextView) rootView.findViewById(R.id.detail_text)).setText(restaurant.getName());
 
         return rootView;
     }

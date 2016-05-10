@@ -17,10 +17,10 @@ public class RestaurantActivity extends AppCompatActivity {
 
     private List<Restaurant> mRestaurants;
 
-    private static final String EXTRA_RESTAURANT_ID =
+    public static final String EXTRA_RESTAURANT_ID =
             "com.bignerdranch.android.randomrestaurants.resId";
 
-    public static Intent newIntent(Context packageContext, int restaurantId) {
+    public static Intent newIntent(Context packageContext, UUID restaurantId) {
         Intent intent = new Intent(packageContext, RestaurantActivity.class);
         intent.putExtra(EXTRA_RESTAURANT_ID, restaurantId);
         return intent;

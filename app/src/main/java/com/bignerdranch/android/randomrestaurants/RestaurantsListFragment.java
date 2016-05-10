@@ -20,9 +20,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.bignerdranch.android.models.Restaurant;
+import com.bignerdranch.android.models.RestaurantLab;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,7 +63,7 @@ public class RestaurantsListFragment extends Fragment {
     private Token accessToken;
 
     //adapter for the list view
-    private ArrayAdapter<String> mRestaurantsAdapter;
+    private ArrayAdapter<Restaurant> mRestaurantsAdapter;
 
     //contain a mapping of categories vs checked , e.g. "chinese : 1" means chinese checked
     public HashMap<String, Integer> categoryFilter = new HashMap<>();
@@ -103,9 +107,10 @@ public class RestaurantsListFragment extends Fragment {
 
     /**
      * Construct a search query, then execute it
-     * @param term Search for a term. Can be restaurants, businesses, or any term that Yelp allows
-     * @param location Location within the search should be contained
-     * @param miles Specify a radius in miles within the search should be contained
+     *
+     * @param term           Search for a term. Can be restaurants, businesses, or any term that Yelp allows
+     * @param location       Location within the search should be contained
+     * @param miles          Specify a radius in miles within the search should be contained
      * @param categoryFilter Specify which restaurant categories to search. Comma delimited string
      * @return JSON string that represents the YELP API response
      */
@@ -180,13 +185,13 @@ public class RestaurantsListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.v(LOG_TAG_RESTAURANT_LIST, "onCreateView called");
-        String[] data = {};
-        List<String> movieReviews = new ArrayList<String>(Arrays.asList(data));
-        mRestaurantsAdapter = new ArrayAdapter<String>(
+        Restaurant[] data = {};
+        List<Restaurant> restaurants = new ArrayList<Restaurant>(Arrays.asList(data));
+        mRestaurantsAdapter = new ArrayAdapter<Restaurant>(
                 getActivity(),
                 R.layout.list_item_restaurant,
                 R.id.list_item_restaurant_textview,
-                movieReviews);
+                restaurants);
 
         View rootView = inflater.inflate(R.layout.fragment_list, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.listview_reviews);
@@ -197,8 +202,8 @@ public class RestaurantsListFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                String title = mRestaurantsAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), RestaurantActivity.class).putExtra(Intent.EXTRA_TEXT, title);
+                Restaurant restaurant = mRestaurantsAdapter.getItem(position);
+                Intent intent = RestaurantActivity.newIntent(getActivity(), restaurant.getId());
                 startActivity(intent);
             }
         });
@@ -206,9 +211,10 @@ public class RestaurantsListFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchRestaurantsTask extends AsyncTask<Object, Void, String[]> {
+    public class FetchRestaurantsTask extends AsyncTask<Object, Void, Void> {
+        private RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
 
-        protected String[] getYelpDataFromJson(String yelpDataJsonStr) throws JSONException {
+        protected void getYelpDataFromJson(String yelpDataJsonStr) throws JSONException {
 
             //json keys
             final String YELP_BUSINESSES = "businesses";
@@ -216,39 +222,36 @@ public class RestaurantsListFragment extends Fragment {
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
-            String[] restaurants = new String[20];
+
             for (int i = 0; i < businesses.length(); i++) {
                 JSONObject business = businesses.getJSONObject(i);
                 String restaurantName = business.getString(YELP_BUSINESS_NAME);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
-                restaurants[i] = restaurantName;
+                restaurantLab.addRestaurant(new Restaurant(restaurantName, "123", 5, "nowhere"));
             }
-            return restaurants;
         }
 
         @Override
-        protected String[] doInBackground(Object... params) {
+        protected Void doInBackground(Object... params) {
             String filterCategories = (String) params[0];
             Log.v(LOG_TAG_FETCH_TASK, "Categories to search: " + filterCategories);
             String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_SEARCH_RADIUS, filterCategories);
             Log.v(LOG_TAG_FETCH_TASK, "YELP STR" + yelpDataJsonStr.length());
-
-            String[] yelpRestaurants = null;
+            restaurantLab.resetRestaurants();
             try {
-                yelpRestaurants = getYelpDataFromJson(yelpDataJsonStr);
+                getYelpDataFromJson(yelpDataJsonStr);
             } catch (JSONException e) {
                 Log.v(LOG_TAG_FETCH_TASK, "failed to parse json");
             }
-            return yelpRestaurants;
+            return null;
         }
 
         @Override
-        protected void onPostExecute(String[] restaurants) {
-            if (restaurants != null && restaurants.length != 0) {
-                mRestaurantsAdapter.clear();
-                for (String restaurant : restaurants) {
-                    mRestaurantsAdapter.add(restaurant);
-                }
+        protected void onPostExecute(Void result) {
+            mRestaurantsAdapter.clear();
+            List<Restaurant> restaurants = restaurantLab.getRestaurants();
+            for (Restaurant restaurant: restaurants) {
+                mRestaurantsAdapter.add(restaurant);
             }
         }
     }
@@ -260,7 +263,7 @@ public class RestaurantsListFragment extends Fragment {
 
     private void validatePrefs(String[] keys) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        for (String key: keys) {
+        for (String key : keys) {
             boolean isChecked = sharedPref.getBoolean(key, false);
             Log.v(LOG_TAG_RESTAURANT_LIST, key + "checked: " + isChecked);
         }
@@ -268,7 +271,7 @@ public class RestaurantsListFragment extends Fragment {
 
     private void populateCategoryFilter(String[] keys) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        for (String key: keys) {
+        for (String key : keys) {
             boolean isChecked = sharedPref.getBoolean(key, false);
             if (isChecked) {
                 categoryFilter.put(key, 1);
@@ -287,6 +290,7 @@ public class RestaurantsListFragment extends Fragment {
     /**
      * Generate a non-random set of categories of restaurants
      * that are enabled in settings
+     *
      * @param categoryFilter contains key, value pairs specifying which categories are checked
      * @return a string containing the categories to filter, e.g. "french, chinese, mexican"
      */
@@ -296,7 +300,7 @@ public class RestaurantsListFragment extends Fragment {
         if (filterList.size() == 0) {
             return generateRandomFilter();
         }
-        for (String filter: filterList) {
+        for (String filter : filterList) {
             filterCategories += filter;
             if (filterList.indexOf(filter) != filterList.size() - 1) {
                 filterCategories += ",";
@@ -308,6 +312,7 @@ public class RestaurantsListFragment extends Fragment {
     /**
      * Generate a random category of restaurants
      * that are enabled in settings
+     *
      * @param categoryFilter contains key, value pairs specifying which categories are checked
      * @return a string containing one random category
      */
@@ -324,6 +329,7 @@ public class RestaurantsListFragment extends Fragment {
 
     /**
      * Generate a list containing the categories that are checked in Settings
+     *
      * @param categoryFilter contains key, value pairs specifying which categories are checked
      * @return a list specifying the categories that are checked
      */

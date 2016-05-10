@@ -40,4 +40,8 @@ public class RestaurantLab {
     public List<Restaurant> getRestaurants() {
         return this.mRestaurants;
     }
+
+    public void resetRestaurants() {
+        mRestaurants = new ArrayList<>();
+    }
 }
