@@ -293,7 +293,8 @@ public class RestaurantsListFragment extends Fragment {
             String filterCategories = (String) params[0];
             Log.v(LOG_TAG_FETCH_TASK, "Categories to search: " + filterCategories);
             String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_SEARCH_RADIUS, filterCategories);
-            Log.v(LOG_TAG_FETCH_TASK, "YELP STR" + yelpDataJsonStr.length());
+            Log.v(LOG_TAG_FETCH_TASK, "YELP STR LEN" + yelpDataJsonStr.length());
+            Log.v(LOG_TAG_FETCH_TASK, "YELP STR" + yelpDataJsonStr);
             restaurantLab.resetRestaurants();
             try {
                 getYelpDataFromJson(yelpDataJsonStr);
