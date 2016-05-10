@@ -1,7 +1,10 @@
 package com.bignerdranch.android.randomrestaurants;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -16,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +28,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -36,21 +42,29 @@ import org.scribe.oauth.OAuthService;
  */
 public class RestaurantsListFragment extends Fragment {
 
-    //YELP API STUFF
+    //Shake sensor variables
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeDetector mShakeDetector;
+
+    //Yelp api variables
     private static final String API_HOST = "api.yelp.com";
     private static final String DEFAULT_TERM = "restaurants";
     private static String LOCATION = "90706"; //zip code
-    private static final int DEFAULT_RADIUS = 10; //in miles
-    private static final int SEARCH_LIMIT = 20;
+    private static final int DEFAULT_SEARCH_RADIUS = 10; //in miles
+    private static final int DEFAULT_SEARCH_LIMIT = 20;
+    private static final String SORT = "2"; //sort of "2" means we will sort from highest to lowest rated
     private static final String SEARCH_PATH = "/v2/search";
-    OAuthService service;
-    Token accessToken;
+    private OAuthService service;
+    private Token accessToken;
 
-    private boolean chineseChecked = false;
+    //adapter for the list view
     private ArrayAdapter<String> mRestaurantsAdapter;
 
+    //contain a mapping of categories vs checked , e.g. "chinese : 1" means chinese checked
     public HashMap<String, Integer> categoryFilter = new HashMap<>();
 
+    //an array of all the possible categories in Settings
     String[] categories = {
             "japanese", "tradamerican", "chinese",
             "indpak", "pizza", "newamerican",
@@ -59,12 +73,12 @@ public class RestaurantsListFragment extends Fragment {
             "seafood", "italian", "greek"
     };
 
-    //logging constants
+    //Logging constants used to indicate where a piece of code executed
     private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
     private final String LOG_TAG_RESTAURANT_LIST = this.getClass().getSimpleName();
 
     /**
-     * Set up the yelp api oauth credentials.
+     * Set up the yelp api oauth credentials in the constructor
      */
     public RestaurantsListFragment() {
         this.service = new ServiceBuilder().provider(TwoStepOAuth.class)
@@ -73,12 +87,13 @@ public class RestaurantsListFragment extends Fragment {
         this.accessToken = new Token(BuildConfig.YELP_TOKEN, BuildConfig.YELP_TOKEN_SECRET);
     }
 
+    //more yelp api authentication stuff
     private OAuthRequest createOAuthRequest(String path) {
         OAuthRequest request = new OAuthRequest(Verb.GET, "https://" + API_HOST + path);
         return request;
     }
 
-    //returns JSON response
+    //This actually executes the yelp API call with the appropriate authentication values
     private String sendRequestAndGetResponse(OAuthRequest request) {
         Log.v(LOG_TAG_FETCH_TASK, request.getCompleteUrl());
         this.service.signRequest(this.accessToken, request);
@@ -86,34 +101,52 @@ public class RestaurantsListFragment extends Fragment {
         return response.getBody();
     }
 
+    /**
+     * Construct a search query, then execute it
+     * @param term Search for a term. Can be restaurants, businesses, or any term that Yelp allows
+     * @param location Location within the search should be contained
+     * @param miles Specify a radius in miles within the search should be contained
+     * @param categoryFilter Specify which restaurant categories to search. Comma delimited string
+     * @return JSON string that represents the YELP API response
+     */
     public String searchForRestaurantsByLocation(String term, String location, double miles, String categoryFilter) {
         OAuthRequest request = createOAuthRequest(SEARCH_PATH);
         request.addQuerystringParameter("term", term);
         request.addQuerystringParameter("location", location);
-        request.addQuerystringParameter("limit", String.valueOf(SEARCH_LIMIT));
+        request.addQuerystringParameter("limit", String.valueOf(DEFAULT_SEARCH_LIMIT));
         request.addQuerystringParameter("radius_filter", Double.toString(convertMilesToMeters(miles)));
-//        categoryFilter = "greek,pizza,newamerican";
         request.addQuerystringParameter("category_filter", categoryFilter);
+        request.addQuerystringParameter("sort", SORT);
         return sendRequestAndGetResponse(request);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setUpShake();
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-        //get reviews up on startup
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
         populateCategoryFilter(categories);
+        String categoryFilterString = parseFilter(categoryFilter);
         printFilters(categoryFilter);
         LOCATION = getLocationPref();
-        reviewsTask.execute(categoryFilter);
+        reviewsTask.execute(categoryFilterString);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mSensorManager.registerListener(mShakeDetector, mAccelerometer, SensorManager.SENSOR_DELAY_UI);
         Log.v(LOG_TAG_RESTAURANT_LIST, "On resume called");
+    }
+
+    @Override
+    public void onPause() {
+        //unregister the Sensor manager on pause
+        mSensorManager.unregisterListener(mShakeDetector);
+        super.onPause();
+        Log.v(LOG_TAG_RESTAURANT_LIST, "On pause called");
     }
 
     @Override
@@ -127,10 +160,10 @@ public class RestaurantsListFragment extends Fragment {
         if (id == R.id.action_refresh) {
             FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
             populateCategoryFilter(categories); //update
+            String categoryFilterString = parseFilter(categoryFilter);
             printFilters(categoryFilter); //verify
             LOCATION = getLocationPref();
-            reviewsTask.execute(categoryFilter);
-//            validatePrefs(categories);
+            reviewsTask.execute(categoryFilterString);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -187,11 +220,11 @@ public class RestaurantsListFragment extends Fragment {
 
         @Override
         protected String[] doInBackground(Object... params) {
-            HashMap<String, Integer> categoryFilter = (HashMap<String, Integer>) params[0];
-            String filterString = parseFilter(categoryFilter);
-            System.out.println("filter String:" + filterString);
-            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_RADIUS, filterString);
-            System.out.println("YELP STR" + yelpDataJsonStr.length());
+            String filterCategories = (String) params[0];
+            Log.v(LOG_TAG_FETCH_TASK, "Categories to search: " + filterCategories);
+            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_SEARCH_RADIUS, filterCategories);
+            Log.v(LOG_TAG_FETCH_TASK, "YELP STR" + yelpDataJsonStr.length());
+
             String[] yelpRestaurants = null;
             try {
                 yelpRestaurants = getYelpDataFromJson(yelpDataJsonStr);
@@ -243,8 +276,44 @@ public class RestaurantsListFragment extends Fragment {
         }
     }
 
+    /**
+     * Generate a non-random set of categories of restaurants
+     * that are enabled in settings
+     * @param categoryFilter contains key, value pairs specifying which categories are checked
+     * @return a string containing the categories to filter, e.g. "french, chinese, mexican"
+     */
     private String parseFilter(HashMap<String, Integer> categoryFilter) {
-        String filterString = ""; //start empty
+        String filterCategories = ""; //start empty
+        List<String> filterList = generateFilterList(categoryFilter);
+        for (String filter: filterList) {
+            filterCategories += filter;
+            if (filterList.indexOf(filter) != filterList.size() - 1) {
+                filterCategories += ",";
+            }
+        }
+        return filterCategories;
+    }
+
+    /**
+     * Generate a random category of restaurants
+     * that are enabled in settings
+     * @param categoryFilter contains key, value pairs specifying which categories are checked
+     * @return a string containing one random category
+     */
+    private String parseRandomizedFilter(HashMap<String, Integer> categoryFilter) {
+        List<String> filterList = generateFilterList(categoryFilter);
+        Random randomGenerator = new Random();
+        int index = randomGenerator.nextInt(filterList.size());
+        String filterCategory = filterList.get(index);
+        return filterCategory;
+    }
+
+    /**
+     * Generate a list containing the categories that are checked in Settings
+     * @param categoryFilter contains key, value pairs specifying which categories are checked
+     * @return a list specifying the categories that are checked
+     */
+    private List<String> generateFilterList(HashMap<String, Integer> categoryFilter) {
         List<String> filterList = new ArrayList<>();
 
         for (Map.Entry<String, Integer> entry : categoryFilter.entrySet()) {
@@ -252,17 +321,31 @@ public class RestaurantsListFragment extends Fragment {
                 filterList.add(entry.getKey());
             }
         }
-        for (String filter: filterList) {
-            filterString += filter;
-            if (filterList.indexOf(filter) != filterList.size() - 1) {
-                filterString += ",";
-            }
-        }
-        return filterString;
+        return filterList;
     }
 
+    //Get the value of the location preference
     private String getLocationPref() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         return sharedPref.getString("location", "");
+    }
+
+    //handle shake events
+    private void setUpShake() {
+        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager
+                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeDetector = new ShakeDetector();
+        mShakeDetector.setOnShakeListener(new ShakeDetector.OnShakeListener() {
+
+            @Override
+            public void onShake(int count) {
+                FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
+                populateCategoryFilter(categories);
+                String categoryFilterString = parseRandomizedFilter(categoryFilter);
+                LOCATION = getLocationPref();
+                reviewsTask.execute(categoryFilterString);
+            }
+        });
     }
 }
