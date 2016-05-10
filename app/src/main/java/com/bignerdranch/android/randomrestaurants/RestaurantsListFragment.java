@@ -126,12 +126,19 @@ public class RestaurantsListFragment extends Fragment {
         setUpShake();
         // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
+        Log.v(LOG_TAG_RESTAURANT_LIST, "on Create called");
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
         populateCategoryFilter(categories);
         String categoryFilterString = parseFilter(categoryFilter);
         printFilters(categoryFilter);
         LOCATION = getLocationPref();
         reviewsTask.execute(categoryFilterString);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.v(LOG_TAG_RESTAURANT_LIST, "on Start called");
     }
 
     @Override
@@ -172,6 +179,7 @@ public class RestaurantsListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.v(LOG_TAG_RESTAURANT_LIST, "onCreateView called");
         String[] data = {};
         List<String> movieReviews = new ArrayList<String>(Arrays.asList(data));
         mRestaurantsAdapter = new ArrayAdapter<String>(
