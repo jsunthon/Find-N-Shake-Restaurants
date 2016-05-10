@@ -3,5 +3,53 @@
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_detail">Restaurant Activity</string>
-    <string name="hello_world">Hello World!</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="pref_geo_title">Geographical</string>
+    <string name="pref_geo_key">geo</string>
+
+    <string name="pref_location_label">Location</string>
+    <string name="pref_location_key" translatable="false">location</string>
+    <string name="pref_location_default" translatable="false">90032</string>
+
+    <!-- Setting Headers-->
+    <string name="pref_categories_title">Restaurant Categories</string>
+    <string name="pref_key_category_settings">categories</string>
+    <string name="pref_location_title">Location</string>
+
+    <!-- Keys for restaurant categories-->
+    <string name="pref_category_japanese_key">japanese</string>
+    <string name="pref_category_chinese_key">chinese</string>
+    <string name="pref_category_tradam_key">traditional american</string>
+    <string name="pref_category_indian_key">indian</string>
+    <string name="pref_category_pizza_key">pizza</string>
+    <string name="pref_category_newam_key">new american</string>
+    <string name="pref_category_mediterranean_key">mediterranean</string>
+    <string name="pref_category_mexican_key">mexican</string>
+    <string name="pref_category_mideastern_key">middle eastern</string>
+    <string name="pref_category_french_key">french</string>
+    <string name="pref_category_thai_key">thai</string>
+    <string name="pref_category_steak_key">steak</string>
+    <string name="pref_category_latin_key">latin</string>
+    <string name="pref_category_seafood_key">seafood</string>
+    <string name="pref_category_italian_key">italian</string>
+    <string name="pref_category_greek_key">greek</string>
+
+    <!-- Titles for restaurant categories-->
+    <string name="pref_category_japanese_title">Japanese</string>
+    <string name="pref_category_chinese_title">Chinese</string>
+    <string name="pref_category_tradam_title">Traditional American</string>
+    <string name="pref_category_indian_title">Indian</string>
+    <string name="pref_category_pizza_title">Pizza</string>
+    <string name="pref_category_newam_title">New American</string>
+    <string name="pref_category_mediterranean_title">Mediterranean</string>
+    <string name="pref_category_mexican_title">Mexican</string>
+    <string name="pref_category_mideastern_title">Middle Eastern</string>
+    <string name="pref_category_french_title">French</string>
+    <string name="pref_category_thai_title">Thai</string>
+    <string name="pref_category_steak_title">Steak</string>
+    <string name="pref_category_latin_title">Latin</string>
+    <string name="pref_category_seafood_title">Seafood</string>
+    <string name="pref_category_italian_title">Italian</string>
+    <string name="pref_category_greek_title">Greek</string>
 </resources>
