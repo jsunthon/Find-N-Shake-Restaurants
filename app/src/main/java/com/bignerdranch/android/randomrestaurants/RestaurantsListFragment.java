@@ -38,14 +38,22 @@ public class RestaurantsListFragment extends Fragment {
     //YELP API STUFF
     private static final String API_HOST = "api.yelp.com";
     private static final String DEFAULT_TERM = "restaurants";
-    private static final String DEFAULT_LOCATION = "90706";
-    private static final int DEFAULT_RADIUS = 32000; //in meters
+    private static final String DEFAULT_LOCATION = "90706"; //zip code
+    private static final int DEFAULT_RADIUS = 10; //in miles
     private static final int SEARCH_LIMIT = 20;
     private static final String SEARCH_PATH = "/v2/search";
     OAuthService service;
     Token accessToken;
 
     private ArrayAdapter<String> mRestaurantsAdapter;
+
+    String[] categories = {
+            "japanese", "tradamerican", "Chinese",
+            "indian", "pizza", "newamerican",
+            "mediterranean", "mexican", "mideastern",
+            "french", "thai", "steak", "latin",
+            "seafood", "italian", "greek"
+    };
 
     //loggers
     private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
@@ -79,8 +87,7 @@ public class RestaurantsListFragment extends Fragment {
         request.addQuerystringParameter("term", term);
         request.addQuerystringParameter("location", location);
         request.addQuerystringParameter("limit", String.valueOf(SEARCH_LIMIT));
-        String stringMiles = Double.toString(convertMilesToMeters(20));
-        request.addQuerystringParameter("radius_filter", stringMiles);
+        request.addQuerystringParameter("radius_filter", Double.toString(convertMilesToMeters(miles)));
         return sendRequestAndGetResponse(request);
     }
 
