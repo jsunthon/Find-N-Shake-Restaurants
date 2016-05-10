@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.2"
 
     defaultConfig {
-        applicationId "com.bignerdranch.android.hw1_movie_reviews"
+        applicationId "com.bignerdranch.android.RandomRestaurantFinder"
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -19,7 +19,6 @@ android {
     }
 
     buildTypes.each {
-        it.buildConfigField 'String', 'NYT_MOVIE_REVIEWS_API_KEY', NYTMovieReviewsApiKey
         it.buildConfigField 'String', 'YELP_CONSUMER_KEY', YelpConsKey
         it.buildConfigField 'String', 'YELP_CONSUMER_SECRET', YelpConsSec
         it.buildConfigField 'String', 'YELP_TOKEN', YelpToken

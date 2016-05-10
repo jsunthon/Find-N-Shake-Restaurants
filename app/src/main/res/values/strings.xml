@@ -19,14 +19,14 @@
 
     <!-- Keys for restaurant categories-->
     <string name="pref_category_japanese_key">japanese</string>
+    <string name="pref_category_tradam_key">tradamerican</string>
     <string name="pref_category_chinese_key">chinese</string>
-    <string name="pref_category_tradam_key">traditional american</string>
-    <string name="pref_category_indian_key">indian</string>
+    <string name="pref_category_indian_key">indpak</string>
     <string name="pref_category_pizza_key">pizza</string>
-    <string name="pref_category_newam_key">new american</string>
+    <string name="pref_category_newam_key">newamerican</string>
     <string name="pref_category_mediterranean_key">mediterranean</string>
     <string name="pref_category_mexican_key">mexican</string>
-    <string name="pref_category_mideastern_key">middle eastern</string>
+    <string name="pref_category_mideastern_key">mideastern</string>
     <string name="pref_category_french_key">french</string>
     <string name="pref_category_thai_key">thai</string>
     <string name="pref_category_steak_key">steak</string>
@@ -37,8 +37,8 @@
 
     <!-- Titles for restaurant categories-->
     <string name="pref_category_japanese_title">Japanese</string>
-    <string name="pref_category_chinese_title">Chinese</string>
     <string name="pref_category_tradam_title">Traditional American</string>
+    <string name="pref_category_chinese_title">Chinese</string>
     <string name="pref_category_indian_title">Indian</string>
     <string name="pref_category_pizza_title">Pizza</string>
     <string name="pref_category_newam_title">New American</string>

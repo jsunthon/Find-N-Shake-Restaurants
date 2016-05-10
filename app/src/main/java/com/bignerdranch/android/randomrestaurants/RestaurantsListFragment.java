@@ -1,7 +1,9 @@
 package com.bignerdranch.android.randomrestaurants;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,15 +16,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
@@ -38,7 +39,7 @@ public class RestaurantsListFragment extends Fragment {
     //YELP API STUFF
     private static final String API_HOST = "api.yelp.com";
     private static final String DEFAULT_TERM = "restaurants";
-    private static final String DEFAULT_LOCATION = "90706"; //zip code
+    private static String LOCATION = "90706"; //zip code
     private static final int DEFAULT_RADIUS = 10; //in miles
     private static final int SEARCH_LIMIT = 20;
     private static final String SEARCH_PATH = "/v2/search";
@@ -48,17 +49,17 @@ public class RestaurantsListFragment extends Fragment {
     private boolean chineseChecked = false;
     private ArrayAdapter<String> mRestaurantsAdapter;
 
+    public HashMap<String, Integer> categoryFilter = new HashMap<>();
+
     String[] categories = {
-            "japanese", "tradamerican", "Chinese",
-            "indian", "pizza", "newamerican",
+            "japanese", "tradamerican", "chinese",
+            "indpak", "pizza", "newamerican",
             "mediterranean", "mexican", "mideastern",
             "french", "thai", "steak", "latin",
             "seafood", "italian", "greek"
     };
 
-    protected static boolean categoriesChanged = false;
-
-    //loggers
+    //logging constants
     private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
     private final String LOG_TAG_RESTAURANT_LIST = this.getClass().getSimpleName();
 
@@ -85,12 +86,14 @@ public class RestaurantsListFragment extends Fragment {
         return response.getBody();
     }
 
-    public String searchForRestaurantsByLocation(String term, String location, double miles) {
+    public String searchForRestaurantsByLocation(String term, String location, double miles, String categoryFilter) {
         OAuthRequest request = createOAuthRequest(SEARCH_PATH);
         request.addQuerystringParameter("term", term);
         request.addQuerystringParameter("location", location);
         request.addQuerystringParameter("limit", String.valueOf(SEARCH_LIMIT));
         request.addQuerystringParameter("radius_filter", Double.toString(convertMilesToMeters(miles)));
+//        categoryFilter = "greek,pizza,newamerican";
+        request.addQuerystringParameter("category_filter", categoryFilter);
         return sendRequestAndGetResponse(request);
     }
 
@@ -101,7 +104,16 @@ public class RestaurantsListFragment extends Fragment {
         setHasOptionsMenu(true);
         //get reviews up on startup
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
-        reviewsTask.execute();
+        populateCategoryFilter(categories);
+        printFilters(categoryFilter);
+        LOCATION = getLocationPref();
+        reviewsTask.execute(categoryFilter);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.v(LOG_TAG_RESTAURANT_LIST, "On resume called");
     }
 
     @Override
@@ -114,7 +126,11 @@ public class RestaurantsListFragment extends Fragment {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
             FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
-            reviewsTask.execute();
+            populateCategoryFilter(categories); //update
+            printFilters(categoryFilter); //verify
+            LOCATION = getLocationPref();
+            reviewsTask.execute(categoryFilter);
+//            validatePrefs(categories);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -149,7 +165,7 @@ public class RestaurantsListFragment extends Fragment {
         return rootView;
     }
 
-    public class FetchRestaurantsTask extends AsyncTask<Void, Void, String[]> {
+    public class FetchRestaurantsTask extends AsyncTask<Object, Void, String[]> {
 
         protected String[] getYelpDataFromJson(String yelpDataJsonStr) throws JSONException {
 
@@ -170,9 +186,11 @@ public class RestaurantsListFragment extends Fragment {
         }
 
         @Override
-        protected String[] doInBackground(Void... params) {
-
-            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, DEFAULT_LOCATION, DEFAULT_RADIUS);
+        protected String[] doInBackground(Object... params) {
+            HashMap<String, Integer> categoryFilter = (HashMap<String, Integer>) params[0];
+            String filterString = parseFilter(categoryFilter);
+            System.out.println("filter String:" + filterString);
+            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_RADIUS, filterString);
             System.out.println("YELP STR" + yelpDataJsonStr.length());
             String[] yelpRestaurants = null;
             try {
@@ -194,8 +212,57 @@ public class RestaurantsListFragment extends Fragment {
         }
     }
 
-    //helper methods
+    // *********************** *HELPER METHODS *************************************//
     public double convertMilesToMeters(double miles) {
         return miles * 1609.344;
+    }
+
+    private void validatePrefs(String[] keys) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        for (String key: keys) {
+            boolean isChecked = sharedPref.getBoolean(key, false);
+            Log.v(LOG_TAG_RESTAURANT_LIST, key + "checked: " + isChecked);
+        }
+    }
+
+    private void populateCategoryFilter(String[] keys) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        for (String key: keys) {
+            boolean isChecked = sharedPref.getBoolean(key, false);
+            if (isChecked) {
+                categoryFilter.put(key, 1);
+            } else {
+                categoryFilter.put(key, 0);
+            }
+        }
+    }
+
+    private void printFilters(HashMap<String, Integer> categoryFilter) {
+        for (Map.Entry<String, Integer> entry : categoryFilter.entrySet()) {
+            Log.d(LOG_TAG_RESTAURANT_LIST, entry.getKey() + ": " + entry.getValue());
+        }
+    }
+
+    private String parseFilter(HashMap<String, Integer> categoryFilter) {
+        String filterString = ""; //start empty
+        List<String> filterList = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> entry : categoryFilter.entrySet()) {
+            if (entry.getValue() == 1) {
+                filterList.add(entry.getKey());
+            }
+        }
+        for (String filter: filterList) {
+            filterString += filter;
+            if (filterList.indexOf(filter) != filterList.size() - 1) {
+                filterString += ",";
+            }
+        }
+        return filterString;
+    }
+
+    private String getLocationPref() {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        return sharedPref.getString("location", "");
     }
 }
