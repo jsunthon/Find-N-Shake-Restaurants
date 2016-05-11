@@ -14,15 +14,20 @@ public class Restaurant {
     private double rating;
     private String categories;
     private String imageUrl;
+    private String snippetImageUrl;
+    private String ratingUrl;
     private double latitude;
     private double longitude;
 
-    public Restaurant(String name, String phone, double rating, String address) {
+    public Restaurant(String name, String phone, double rating, String address, String imageUrl, String snippetImageUrl, String ratingUrl) {
         mId = UUID.randomUUID(); //random ID for a restaurant is auto generated
         this.name = name;
         this.phone = phone;
         this.rating = rating;
         this.address = address;
+        this.imageUrl = imageUrl;
+        this.snippetImageUrl = snippetImageUrl;
+        this.ratingUrl = ratingUrl;
     }
 
     public String getAddress() {
@@ -95,5 +100,21 @@ public class Restaurant {
 
     public void setRating(double rating) {
         this.rating = rating;
+    }
+
+    public String getRatingUrl() {
+        return ratingUrl;
+    }
+
+    public void setRatingUrl(String ratingUrl) {
+        this.ratingUrl = ratingUrl;
+    }
+
+    public String getSnippetImageUrl() {
+        return snippetImageUrl;
+    }
+
+    public void setSnippetImageUrl(String snippetImageUrl) {
+        this.snippetImageUrl = snippetImageUrl;
     }
 }

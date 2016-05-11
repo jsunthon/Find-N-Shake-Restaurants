@@ -18,11 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
@@ -32,7 +30,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +89,7 @@ public class RestaurantsListFragment extends Fragment {
      * Set up the yelp api oauth credentials in the constructor
      */
     public RestaurantsListFragment() {
+        Log.v(LOG_TAG_RESTAURANT_LIST, "fragment constructed");
         this.service = new ServiceBuilder().provider(TwoStepOAuth.class)
                 .apiKey(BuildConfig.YELP_CONSUMER_KEY)
                 .apiSecret(BuildConfig.YELP_CONSUMER_SECRET).build();
@@ -136,15 +134,12 @@ public class RestaurantsListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setUpShake();
-        // Add this line in order for this fragment to handle menu events.
         setHasOptionsMenu(true);
-        Log.v(LOG_TAG_RESTAURANT_LIST, "on Create called");
-        FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
-        populateCategoryFilter(categories);
-        String categoryFilterString = parseFilter(categoryFilter);
-        printFilters(categoryFilter);
-        LOCATION = getLocationPref();
-        reviewsTask.execute(categoryFilterString);
+        int numberOfRestaurants = RestaurantLab.get(getActivity()).getRestaurants().size();
+        Log.v(LOG_TAG_RESTAURANT_LIST, "From ON create, res size: " + numberOfRestaurants);
+        if (numberOfRestaurants == 0) {
+            makeAPICall();
+        }
     }
 
     @Override
@@ -157,7 +152,7 @@ public class RestaurantsListFragment extends Fragment {
         mLinearLayout = (LinearLayout) view.findViewById(R.id.default_linear_layout);
         mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurant_recycler_view);
         mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        updateUI();
+        retrieveUI();
         return view;
     }
 
@@ -191,21 +186,27 @@ public class RestaurantsListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
-            FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
-            populateCategoryFilter(categories); //update
-            String categoryFilterString = parseFilter(categoryFilter);
-            printFilters(categoryFilter); //verify
-            LOCATION = getLocationPref();
-            reviewsTask.execute(categoryFilterString);
+            makeAPICall();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateUI() {
+    private void makeAPICall() {
+        Toast.makeText(getContext(), "Retrieving restaurants...", Toast.LENGTH_SHORT).show();
+        FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
+        populateCategoryFilter(categories); //update
+        String categoryFilterString = parseFilter(categoryFilter);
+
+        //verify that our settings are category filter is taking place
+        printFilters(categoryFilter);
+        LOCATION = getLocationPref();
+        reviewsTask.execute(categoryFilterString);
+    }
+
+    private void retrieveUI() {
         RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
         List<Restaurant> restaurants = restaurantLab.getRestaurants();
-
         Log.v(LOG_TAG_RESTAURANT_LIST, "Size: " + restaurants.size());
         mAdapter = new RestaurantAdapter(restaurants);
         mRestaurantRecyclerView.setAdapter(mAdapter);
@@ -226,6 +227,7 @@ public class RestaurantsListFragment extends Fragment {
             mRestaurant = restaurant;
             mRestaurantNameTextView.setText(mRestaurant.getName());
         }
+
         @Override
         public void onClick(View v) {
             Intent intent = RestaurantActivity.newIntent(getActivity(), mRestaurant.getId());
@@ -271,6 +273,9 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_RATING = "rating";
             final String YELP_LOCATION = "location";
             final String YELP_ADDRESS = "display_address";
+            final String YELP_IMG_MAIN = "image_url";
+            final String YELP_IMG_SNIPPET = "snippet_image_url";
+            final String YELP_IMG_RATING = "rating_img_url";
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
@@ -283,8 +288,15 @@ public class RestaurantsListFragment extends Fragment {
                 JSONObject restaurantLocation = business.getJSONObject(YELP_LOCATION);
                 JSONArray restaurantAddrComp = restaurantLocation.getJSONArray(YELP_ADDRESS);
                 String restaurantAddress = parseAddress(restaurantAddrComp);
+                String imageUrl = business.getString(YELP_IMG_MAIN);
+                String snippetImageUrl = business.getString(YELP_IMG_SNIPPET);
+                String ratingImgUrl = business.getString(YELP_IMG_RATING);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
-                restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone, restaurantRating, restaurantAddress));
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant  main imgs: " + imageUrl);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant rating imgs: " + ratingImgUrl);
+                restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone,
+                        restaurantRating, restaurantAddress,
+                        imageUrl, snippetImageUrl, ratingImgUrl));
             }
         }
 
@@ -306,7 +318,7 @@ public class RestaurantsListFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void result) {
-            updateUI();
+            retrieveUI();
         }
     }
 
@@ -432,11 +444,7 @@ public class RestaurantsListFragment extends Fragment {
 
             @Override
             public void onShake(int count) {
-                FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
-                populateCategoryFilter(categories);
-                String categoryFilterString = parseRandomizedFilter(categoryFilter);
-                LOCATION = getLocationPref();
-                reviewsTask.execute(categoryFilterString);
+                makeAPICall();
             }
         });
     }
