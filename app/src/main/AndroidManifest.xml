@@ -4,7 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true" />
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
         android:allowBackup="true"
@@ -29,6 +34,14 @@
                 android:value="com.bignerdranch.android.randomrestaurants.RestaurantListActivity"/>
         </activity>
         <activity
+            android:name="com.bignerdranch.android.googleplayservice.GoogleMapActivity"
+            android:label="@string/title_activity_google_map"
+            android:parentActivityName="com.bignerdranch.android.googleplayservice.GoogleMapActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bignerdranch.android.googleplayservice.GoogleMapActivity"/>
+        </activity>
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".RestaurantListActivity">
@@ -36,6 +49,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.bignerdranch.android.randomrestaurants.RestaurantListActivity"/>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyApiatpL9IP-gUeIgP8J-G7k0TzE5-fXUo"/>
     </application>
 
 </manifest>

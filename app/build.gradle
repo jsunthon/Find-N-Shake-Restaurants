@@ -23,6 +23,7 @@ android {
         it.buildConfigField 'String', 'YELP_CONSUMER_SECRET', YelpConsSec
         it.buildConfigField 'String', 'YELP_TOKEN', YelpToken
         it.buildConfigField 'String', 'YELP_TOKEN_SECRET', YelpTokenSecret
+        it.buildConfigField 'String', 'GOOGLE_API_KEY', GoogleAPIKey
     }
 
 }
@@ -34,5 +35,6 @@ dependencies {
     compile 'junit:junit:4.12'
     compile 'org.scribe:scribe:1.3.7'
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
+    compile 'com.google.android.gms:play-services-maps:8.4.0'
 
 }

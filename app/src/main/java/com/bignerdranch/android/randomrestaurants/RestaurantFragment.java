@@ -1,5 +1,6 @@
 package com.bignerdranch.android.randomrestaurants;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -9,9 +10,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
 
@@ -25,7 +28,7 @@ public class RestaurantFragment extends Fragment {
 
     private Restaurant restaurant;
     private final String LOG_TAG = getClass().getSimpleName();
-
+    private Button mShowMap;
     public RestaurantFragment() {
     }
 
@@ -34,9 +37,17 @@ public class RestaurantFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
 
-        UUID restaurantId = (UUID) getActivity().getIntent().getSerializableExtra(RestaurantActivity.EXTRA_RESTAURANT_ID);
+        final UUID restaurantId = (UUID) getActivity().getIntent().getSerializableExtra(RestaurantActivity.EXTRA_RESTAURANT_ID);
         restaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
 
+        mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
+        mShowMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = GoogleMapActivity.newIntent(getActivity(), restaurant.getLatitude(), restaurant.getLongitude());
+                startActivity(intent);
+            }
+        });
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(restaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(restaurant.getAddress());
         ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText(restaurant.getPhone());
