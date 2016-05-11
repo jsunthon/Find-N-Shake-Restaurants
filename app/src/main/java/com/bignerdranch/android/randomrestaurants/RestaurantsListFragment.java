@@ -226,6 +226,7 @@ public class RestaurantsListFragment extends Fragment {
             mRestaurant = restaurant;
             mRestaurantNameTextView.setText(mRestaurant.getName());
         }
+
         @Override
         public void onClick(View v) {
             Intent intent = RestaurantActivity.newIntent(getActivity(), mRestaurant.getId());
@@ -271,6 +272,9 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_RATING = "rating";
             final String YELP_LOCATION = "location";
             final String YELP_ADDRESS = "display_address";
+            final String YELP_IMG_MAIN = "image_url";
+            final String YELP_IMG_SNIPPET = "snippet_image_url";
+            final String YELP_IMG_RATING = "rating_img_url";
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
@@ -283,8 +287,15 @@ public class RestaurantsListFragment extends Fragment {
                 JSONObject restaurantLocation = business.getJSONObject(YELP_LOCATION);
                 JSONArray restaurantAddrComp = restaurantLocation.getJSONArray(YELP_ADDRESS);
                 String restaurantAddress = parseAddress(restaurantAddrComp);
+                String imageUrl = business.getString(YELP_IMG_MAIN);
+                String snippetImageUrl = business.getString(YELP_IMG_SNIPPET);
+                String ratingImgUrl = business.getString(YELP_IMG_RATING);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
-                restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone, restaurantRating, restaurantAddress));
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant  main imgs: " + imageUrl);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant rating imgs: " + ratingImgUrl);
+                restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone,
+                        restaurantRating, restaurantAddress,
+                        imageUrl, snippetImageUrl, ratingImgUrl));
             }
         }
 
