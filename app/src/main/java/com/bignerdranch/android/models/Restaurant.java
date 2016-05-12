@@ -19,7 +19,10 @@ public class Restaurant {
     private double latitude;
     private double longitude;
 
-    public Restaurant(String name, String phone, double rating, String address, String imageUrl, String snippetImageUrl, String ratingUrl) {
+    public Restaurant(String name, String phone, double rating,
+                      String address, String imageUrl,
+                      String snippetImageUrl, String ratingUrl,
+                      double latitude, double longitude) {
         mId = UUID.randomUUID(); //random ID for a restaurant is auto generated
         this.name = name;
         this.phone = phone;
@@ -28,6 +31,8 @@ public class Restaurant {
         this.imageUrl = imageUrl;
         this.snippetImageUrl = snippetImageUrl;
         this.ratingUrl = ratingUrl;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getAddress() {

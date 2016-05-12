@@ -276,6 +276,9 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_IMG_MAIN = "image_url";
             final String YELP_IMG_SNIPPET = "snippet_image_url";
             final String YELP_IMG_RATING = "rating_img_url";
+            final String YELP_COORDINATE = "coordinate";
+            final String YELP_LATITUDE = "latitude";
+            final String YELP_LONGITUDE = "longitude";
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
@@ -288,15 +291,18 @@ public class RestaurantsListFragment extends Fragment {
                 JSONObject restaurantLocation = business.getJSONObject(YELP_LOCATION);
                 JSONArray restaurantAddrComp = restaurantLocation.getJSONArray(YELP_ADDRESS);
                 String restaurantAddress = parseAddress(restaurantAddrComp);
+                JSONObject restaurantCoordinates = restaurantLocation.getJSONObject(YELP_COORDINATE);
+                double restaurantLatitude = restaurantCoordinates.getDouble(YELP_LATITUDE);
+                double restaurantLongitude = restaurantCoordinates.getDouble(YELP_LONGITUDE);
                 String imageUrl = business.getString(YELP_IMG_MAIN);
                 String snippetImageUrl = business.getString(YELP_IMG_SNIPPET);
                 String ratingImgUrl = business.getString(YELP_IMG_RATING);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
-                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant  main imgs: " + imageUrl);
-                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant rating imgs: " + ratingImgUrl);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant latitude " + restaurantLatitude);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant longitude: " + restaurantLongitude);
                 restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone,
                         restaurantRating, restaurantAddress,
-                        imageUrl, snippetImageUrl, ratingImgUrl));
+                        imageUrl, snippetImageUrl, ratingImgUrl, restaurantLatitude, restaurantLongitude));
             }
         }
 
