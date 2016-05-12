@@ -17,6 +17,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
  * Created by jsunthon on 5/11/2016.
@@ -60,11 +61,15 @@ public class GoogleMapFragment extends SupportMapFragment {
         Log.v(LOG_TAG, "lat, long in updateUI: " + itemPoint.latitude + " longitude: " + itemPoint.longitude);
 //        LatLng myPoint = new LatLng(
 //                mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        LatLngBounds bounds = new LatLngBounds.Builder()
-                .include(itemPoint)
-                .build();
-        int margin = getResources().getDimensionPixelSize(R.dimen.map_inset_margin);
-        CameraUpdate update = CameraUpdateFactory.newLatLngBounds(bounds, margin);
+        MarkerOptions restaurantMarker = new MarkerOptions()
+                .position(itemPoint);
+        mMap.clear();
+        mMap.addMarker(restaurantMarker);
+//        LatLngBounds bounds = new LatLngBounds.Builder()
+//                .include(itemPoint)
+//                .build();
+//        int margin = getResources().getDimensionPixelSize(R.dimen.map_inset_margin);
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(itemPoint,15);
         mMap.animateCamera(update);
     }
 
