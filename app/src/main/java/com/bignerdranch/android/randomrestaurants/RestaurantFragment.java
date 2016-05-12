@@ -44,10 +44,14 @@ public class RestaurantFragment extends Fragment {
         mShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = GoogleMapActivity.newIntent(getActivity(), restaurant.getLatitude(), restaurant.getLongitude());
+                Intent intent = GoogleMapActivity.newIntent(getActivity(), restaurant.getLatitude(),
+                        restaurant.getLongitude(), restaurant.getName()
+                        , restaurant.getAddress(), restaurant.getPhone(),
+                        restaurant.getRating());
                 startActivity(intent);
             }
         });
+
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(restaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(restaurant.getAddress());
         ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText(restaurant.getPhone());

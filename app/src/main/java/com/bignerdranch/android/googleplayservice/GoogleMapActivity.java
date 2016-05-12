@@ -26,10 +26,30 @@ public class GoogleMapActivity extends AppCompatActivity {
     public static final String EXTRA_LON =
             "com.bignerdranch.android.randomrestaurants.lon";
 
-    public static Intent newIntent(Context packageContext, double lat, double lon) {
+    public static final String EXTRA_RESTAURANT_NAME =
+            "com.bignerdranch.android.randomrestaurants.restaurantname";
+
+    public static final String EXTRA_RESTAURANT_ADDRESS =
+            "com.bignerdranch.android.randomrestaurants.restaurantaddress";
+
+    public static final String EXTRA_RESTAURANT_PHONE =
+            "com.bignerdranch.android.randomrestaurants.restaurantphone";
+
+    public static final String EXTRA_RESTAURANT_RATING =
+            "com.bignerdranch.android.randomrestaurants.restaurantrating";
+
+
+    public static Intent newIntent(Context packageContext,
+                                   double lat, double lon, String restaurantName,
+                                   String restaurantAddress, String restaurantPhone,
+                                   double restaurantRating) {
         Intent intent = new Intent(packageContext, GoogleMapActivity.class);
         intent.putExtra(EXTRA_LAT, lat);
         intent.putExtra(EXTRA_LON, lon);
+        intent.putExtra(EXTRA_RESTAURANT_NAME, restaurantName);
+        intent.putExtra(EXTRA_RESTAURANT_ADDRESS, restaurantAddress);
+        intent.putExtra(EXTRA_RESTAURANT_PHONE, restaurantPhone);
+        intent.putExtra(EXTRA_RESTAURANT_RATING, restaurantRating);
         return intent;
     }
 

@@ -23,7 +23,6 @@ android {
         it.buildConfigField 'String', 'YELP_CONSUMER_SECRET', YelpConsSec
         it.buildConfigField 'String', 'YELP_TOKEN', YelpToken
         it.buildConfigField 'String', 'YELP_TOKEN_SECRET', YelpTokenSecret
-        it.buildConfigField 'String', 'GOOGLE_API_KEY', GoogleAPIKey
     }
 
 }
