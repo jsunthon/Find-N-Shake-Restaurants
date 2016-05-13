@@ -41,21 +41,31 @@ public class RestaurantFragment extends Fragment {
         restaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
 
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
-        mShowMap.setText("Find " + restaurant.getName());
-        mShowMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = GoogleMapActivity.newIntent(getActivity(), restaurant.getLatitude(),
-                        restaurant.getLongitude(), restaurant.getName()
-                        , restaurant.getAddress(), restaurant.getPhone(),
-                        restaurant.getRating());
-                startActivity(intent);
-            }
-        });
+
+        if (restaurant.getLatitude() == 0.00 && restaurant.getLongitude() == 0.00) {
+            mShowMap.setText(restaurant.getName() + " coordinate location and map not available");
+        } else {
+            mShowMap.setText("Find " + restaurant.getName());
+            mShowMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = GoogleMapActivity.newIntent(getActivity(), restaurant.getLatitude(),
+                            restaurant.getLongitude(), restaurant.getName()
+                            , restaurant.getAddress(), restaurant.getPhone(),
+                            restaurant.getRating());
+                    startActivity(intent);
+                }
+            });
+        }
 
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(restaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(restaurant.getAddress());
-        ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText(restaurant.getPhone());
+
+        if (restaurant.getPhone() != "123") {
+            ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText(restaurant.getPhone());
+        } else {
+            ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText("Phone number not available.");
+        }
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.main_img_view))
                 .execute(restaurant.getImageUrl());
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.snippet_img_view))
