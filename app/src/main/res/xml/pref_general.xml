@@ -6,7 +6,7 @@
         android:key="@string/pref_geo_key"
         android:title="@string/pref_geo_title">
         <EditTextPreference
-            android:defaultValue="@string/pref_location_default"
+            android:defaultValue="90706"
             android:inputType="text"
             android:key="@string/pref_location_key"
             android:singleLine="true"
