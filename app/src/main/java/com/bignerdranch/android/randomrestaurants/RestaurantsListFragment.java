@@ -3,6 +3,7 @@ package com.bignerdranch.android.randomrestaurants;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,8 +68,6 @@ public class RestaurantsListFragment extends Fragment {
     //adapter for the list view
     private RecyclerView mRestaurantRecyclerView;
     private RestaurantAdapter mAdapter; //adapter for the restaurantrecycerview
-    private LinearLayout mLinearLayout; //used for the recycler view
-
 
     //contain a mapping of categories vs checked , e.g. "chinese : 1" means chinese checked
     public HashMap<String, Integer> categoryFilter = new HashMap<>();
@@ -149,9 +149,14 @@ public class RestaurantsListFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_restaurant_list, container, false);
 
-        mLinearLayout = (LinearLayout) view.findViewById(R.id.default_linear_layout);
         mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurant_recycler_view);
         mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRestaurantRecyclerView
+                .addItemDecoration(
+                        new HorizontalDividerItemDecoration.Builder(getActivity())
+                                .colorResId(R.color.colorPrimary)
+                                .sizeResId(R.dimen.divider)
+                                .build());
         retrieveUI();
         return view;
     }
