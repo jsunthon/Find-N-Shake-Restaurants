@@ -280,7 +280,7 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_ADDRESS = "display_address";
             final String YELP_IMG_MAIN = "image_url";
             final String YELP_IMG_SNIPPET = "snippet_image_url";
-            final String YELP_IMG_RATING = "rating_img_url";
+            final String YELP_IMG_RATING = "rating_img_url_large";
             final String YELP_COORDINATE = "coordinate";
             final String YELP_LATITUDE = "latitude";
             final String YELP_LONGITUDE = "longitude";
