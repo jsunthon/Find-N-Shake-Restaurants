@@ -119,7 +119,7 @@ public class RestaurantsListFragment extends Fragment {
      * @param categoryFilter Specify which restaurant categories to search. Comma delimited string
      * @return JSON string that represents the YELP API response
      */
-    public String searchForRestaurantsByLocation(String term, String location, double miles, String categoryFilter) {
+    public String searchForRestaurantsByLocation(String term, String location, double miles, String categoryFilter, int offset) {
         OAuthRequest request = createOAuthRequest(SEARCH_PATH);
         request.addQuerystringParameter("term", term);
         request.addQuerystringParameter("location", location);
@@ -127,6 +127,7 @@ public class RestaurantsListFragment extends Fragment {
         request.addQuerystringParameter("radius_filter", Double.toString(convertMilesToMeters(miles)));
         request.addQuerystringParameter("category_filter", categoryFilter);
         request.addQuerystringParameter("sort", SORT);
+        request.addQuerystringParameter("offset", Integer.toString(offset));
         return sendRequestAndGetResponse(request);
     }
 
@@ -343,7 +344,8 @@ public class RestaurantsListFragment extends Fragment {
         protected Void doInBackground(Object... params) {
             String filterCategories = (String) params[0];
             Log.v(LOG_TAG_FETCH_TASK, "Categories to search: " + filterCategories);
-            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_SEARCH_RADIUS, filterCategories);
+            int offset = generateOffset();
+            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_SEARCH_RADIUS, filterCategories, offset);
             Log.v(LOG_TAG_FETCH_TASK, "YELP STR LEN" + yelpDataJsonStr.length());
             Log.v(LOG_TAG_FETCH_TASK, "YELP STR" + yelpDataJsonStr);
             restaurantLab.resetRestaurants();
@@ -455,6 +457,12 @@ public class RestaurantsListFragment extends Fragment {
         int index = random.nextInt(categories.length);
         String randomCategory = categories[index];
         return randomCategory;
+    }
+
+    private int generateOffset() {
+        Random random = new Random();
+        int offset = random.nextInt(10);
+        return offset;
     }
 
     //Get the value of the location preference
