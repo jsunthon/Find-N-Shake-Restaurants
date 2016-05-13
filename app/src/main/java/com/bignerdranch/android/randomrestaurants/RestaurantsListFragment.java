@@ -219,6 +219,7 @@ public class RestaurantsListFragment extends Fragment {
 
     private class RestaurantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mRestaurantNameTextView;
+        private TextView mRestaurantCategoryTextView;
 
         private Restaurant mRestaurant;
 
@@ -226,11 +227,13 @@ public class RestaurantsListFragment extends Fragment {
             super(itemView);
             itemView.setOnClickListener(this);
             mRestaurantNameTextView = (TextView) itemView.findViewById(R.id.list_item_restaurant_textview);
+            mRestaurantCategoryTextView = (TextView) itemView.findViewById(R.id.restaurant_category_textview);
         }
 
         public void bindRestaurant(Restaurant restaurant) {
             mRestaurant = restaurant;
             mRestaurantNameTextView.setText(mRestaurant.getName());
+            mRestaurantCategoryTextView.setText(mRestaurant.getCategories());
         }
 
         @Override
@@ -284,6 +287,7 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_COORDINATE = "coordinate";
             final String YELP_LATITUDE = "latitude";
             final String YELP_LONGITUDE = "longitude";
+            final String YELP_CATEGORIES = "categories";
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
@@ -302,12 +306,17 @@ public class RestaurantsListFragment extends Fragment {
                 String imageUrl = business.getString(YELP_IMG_MAIN);
                 String snippetImageUrl = business.getString(YELP_IMG_SNIPPET);
                 String ratingImgUrl = business.getString(YELP_IMG_RATING);
+                JSONArray restaurantCategory = business.getJSONArray(YELP_CATEGORIES);
+                String restaurantCategories = parseCategories(restaurantCategory);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant latitude " + restaurantLatitude);
                 Log.v(LOG_TAG_FETCH_TASK, "Got restaurant longitude: " + restaurantLongitude);
-                restaurantLab.addRestaurant(new Restaurant(restaurantName, restaurantPhone,
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant categories: " + restaurantCategories);
+                restaurantLab.addRestaurant(new Restaurant(
+                        restaurantName, restaurantPhone,
                         restaurantRating, restaurantAddress,
-                        imageUrl, snippetImageUrl, ratingImgUrl, restaurantLatitude, restaurantLongitude));
+                        imageUrl, snippetImageUrl, ratingImgUrl,
+                        restaurantLatitude, restaurantLongitude, restaurantCategories));
             }
         }
 
@@ -445,6 +454,17 @@ public class RestaurantsListFragment extends Fragment {
         return address;
     }
 
+    private String parseCategories(JSONArray jsonCategories) throws JSONException {
+        String categories = "";
+        for (int i = 0; i < jsonCategories.length(); i++) {
+            JSONArray category = jsonCategories.getJSONArray(i);
+            categories += category.get(0);
+            if (i != jsonCategories.length() - 1) {
+                categories += ", ";
+            }
+        }
+        return categories;
+    }
     //handle shake events
     private void setUpShake() {
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
