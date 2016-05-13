@@ -201,7 +201,7 @@ public class RestaurantsListFragment extends Fragment {
         Toast.makeText(getContext(), "Retrieving restaurants...", Toast.LENGTH_SHORT).show();
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
         populateCategoryFilter(categories); //update
-        String categoryFilterString = parseFilter(categoryFilter);
+        String categoryFilterString = parseRandomizedFilter(categoryFilter);
 
         //verify that our settings are category filter is taking place
         printFilters(categoryFilter);
@@ -288,30 +288,49 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_LATITUDE = "latitude";
             final String YELP_LONGITUDE = "longitude";
             final String YELP_CATEGORIES = "categories";
-
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
 
             for (int i = 0; i < businesses.length(); i++) {
                 JSONObject business = businesses.getJSONObject(i);
                 String restaurantName = business.getString(YELP_BUSINESS_NAME);
-                String restaurantPhone = business.getString(YELP_PHONE);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
+                String restaurantPhone = "123";
+                try {
+                    restaurantPhone = business.getString(YELP_PHONE);
+                    Log.v(LOG_TAG_FETCH_TASK, "Got restaurant phone: " + restaurantPhone);
+                } catch (JSONException e){
+                    Log.e(LOG_TAG_FETCH_TASK, "Restaurant phone # for " + restaurantName + " not available.");
+                }
                 double restaurantRating = business.getDouble(YELP_RATING);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant rating: " + restaurantRating);
                 JSONObject restaurantLocation = business.getJSONObject(YELP_LOCATION);
                 JSONArray restaurantAddrComp = restaurantLocation.getJSONArray(YELP_ADDRESS);
                 String restaurantAddress = parseAddress(restaurantAddrComp);
-                JSONObject restaurantCoordinates = restaurantLocation.getJSONObject(YELP_COORDINATE);
-                double restaurantLatitude = restaurantCoordinates.getDouble(YELP_LATITUDE);
-                double restaurantLongitude = restaurantCoordinates.getDouble(YELP_LONGITUDE);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant address: " + restaurantAddress);
+                JSONObject restaurantCoordinates;
+                double restaurantLatitude = 0.00;
+                double restaurantLongitude = 0.00;
+                try {
+                    restaurantCoordinates = restaurantLocation.getJSONObject(YELP_COORDINATE);
+                    restaurantLatitude = restaurantCoordinates.getDouble(YELP_LATITUDE);
+                    restaurantLongitude = restaurantCoordinates.getDouble(YELP_LONGITUDE);
+                    Log.v(LOG_TAG_FETCH_TASK, "Got restaurant latitude " + restaurantLatitude);
+                    Log.v(LOG_TAG_FETCH_TASK, "Got restaurant longitude: " + restaurantLongitude);
+                } catch (JSONException e) {
+                    Log.v(LOG_TAG_FETCH_TASK, "Restaurant has no coordinate location.");
+                }
                 String imageUrl = business.getString(YELP_IMG_MAIN);
                 String snippetImageUrl = business.getString(YELP_IMG_SNIPPET);
                 String ratingImgUrl = business.getString(YELP_IMG_RATING);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant img main: " + imageUrl);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant img snip: " + snippetImageUrl);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant img rating: " + ratingImgUrl);
+
                 JSONArray restaurantCategory = business.getJSONArray(YELP_CATEGORIES);
                 String restaurantCategories = parseCategories(restaurantCategory);
-                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant: " + restaurantName);
-                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant latitude " + restaurantLatitude);
-                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant longitude: " + restaurantLongitude);
-                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant categories: " + restaurantCategories);
+                Log.v(LOG_TAG_FETCH_TASK, "Got restaurant category: " + restaurantCategories);
+
                 restaurantLab.addRestaurant(new Restaurant(
                         restaurantName, restaurantPhone,
                         restaurantRating, restaurantAddress,
@@ -331,6 +350,7 @@ public class RestaurantsListFragment extends Fragment {
             try {
                 getYelpDataFromJson(yelpDataJsonStr);
             } catch (JSONException e) {
+                e.printStackTrace();
                 Log.v(LOG_TAG_FETCH_TASK, "failed to parse json");
             }
             return null;

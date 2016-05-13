@@ -16,67 +16,67 @@
         android:key="@string/pref_key_category_settings"
         android:title="@string/pref_categories_title">
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_chinese_key"
             android:title="@string/pref_category_chinese_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_tradam_key"
             android:title="@string/pref_category_tradam_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_japanese_key"
             android:title="@string/pref_category_japanese_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_indian_key"
             android:title="@string/pref_category_indian_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_pizza_key"
             android:title="@string/pref_category_pizza_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_newam_key"
             android:title="@string/pref_category_newam_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_mediterranean_key"
             android:title="@string/pref_category_mediterranean_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_mexican_key"
             android:title="@string/pref_category_mexican_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_mideastern_key"
             android:title="@string/pref_category_mideastern_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_french_key"
             android:title="@string/pref_category_french_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_thai_key"
             android:title="@string/pref_category_thai_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_steak_key"
             android:title="@string/pref_category_steak_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_latin_key"
             android:title="@string/pref_category_latin_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_seafood_key"
             android:title="@string/pref_category_seafood_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_italian_key"
             android:title="@string/pref_category_italian_title"/>
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="@string/pref_category_greek_key"
             android:title="@string/pref_category_greek_title"/>
     </PreferenceCategory>
