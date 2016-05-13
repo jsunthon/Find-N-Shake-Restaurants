@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
+                android:focusable="true"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:padding="5dp">
 
     <TextView android:id="@+id/list_item_restaurant_textview"
               xmlns:android="http://schemas.android.com/apk/res/android"
+              android:textColor="@color/name"
+              android:textSize="@dimen/restaurant_list_name"
+              android:textStyle="bold"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:gravity="center_vertical"
-              android:minHeight="?android:attr/listPreferredItemHeight"/>
+        />
+    <TextView
+        android:id="@+id/restaurant_category_textview"
+        android:layout_below="@id/list_item_restaurant_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"/>
 </RelativeLayout>

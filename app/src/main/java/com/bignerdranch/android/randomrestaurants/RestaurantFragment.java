@@ -41,6 +41,7 @@ public class RestaurantFragment extends Fragment {
         restaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
 
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
+        mShowMap.setText("Find " + restaurant.getName());
         mShowMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +56,6 @@ public class RestaurantFragment extends Fragment {
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(restaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(restaurant.getAddress());
         ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText(restaurant.getPhone());
-        ((TextView) rootView.findViewById(R.id.restaurant_rating_detail_text)).setText(String.valueOf(restaurant.getRating()));
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.main_img_view))
                 .execute(restaurant.getImageUrl());
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.snippet_img_view))
