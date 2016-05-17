@@ -22,8 +22,9 @@ public class Contract {
 
         //Foreign key location table
         public static final String COLUMN_LOC_KEY = "location_id";
-        //Foreign key category table
-        public static final String COLUMN_CAT_KEY = "category_id";
+
+        //Category that was randomly queried
+        public static final String COLUMN_CAT_KEY = "query";
 
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_PHONE = "phone";
@@ -35,12 +36,6 @@ public class Contract {
         public static final String COLUMN_LATITUDE = "latitude";
         public static final String COLUMN_LONGITUDE = "longitude";
         public static final String COLUMN_CATEGORIES = "categories";
-    }
-
-    public static final class CategoryEntry implements BaseColumns{
-        public static final String TABLE_NAME = "category";
-
-        public static final String COLUMN_CATEGORY = "category_name";
     }
 
 }
