@@ -31,4 +31,9 @@ proguard/
 # Android Studio captures folder
 captures/
 
+# idea project files (from udacity github)
 .idea/
+.idea/.name
+*.iml
+*.ipr
+*.iws
