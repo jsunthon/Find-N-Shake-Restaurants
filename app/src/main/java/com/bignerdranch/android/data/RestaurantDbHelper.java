@@ -47,7 +47,7 @@ public class RestaurantDbHelper extends SQLiteOpenHelper{
                 Contract.LocationEntry.COLUMN_COORD_LONG + " REAL NOT NULL " +
                 " );";
 
-        db.execSQL(SQL_CREATE_RESTAURANT_TABLE);
+        //db.execSQL(SQL_CREATE_RESTAURANT_TABLE);
         db.execSQL(SQL_CREATE_LOCATION_TABLE);
 
     }
