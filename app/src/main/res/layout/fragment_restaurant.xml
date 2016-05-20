@@ -74,8 +74,19 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="25dp"
-            android:text="Map Location"/>
+            android:text="Map Location"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_margin="5dp"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/directions"
+            android:id="@+id/google_map_directions"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_margin="5dp"
+            android:layout_marginBottom="25dp"/>
 
     </LinearLayout>
 

@@ -29,6 +29,7 @@ public class RestaurantFragment extends Fragment {
     private Restaurant restaurant;
     private final String LOG_TAG = getClass().getSimpleName();
     private Button mShowMap;
+    private Button mShowDirections;
     public RestaurantFragment() {
     }
 
@@ -42,6 +43,8 @@ public class RestaurantFragment extends Fragment {
 
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
 
+        mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
+
         if (restaurant.getLatitude() == 0.00 && restaurant.getLongitude() == 0.00) {
             mShowMap.setText(restaurant.getName() + " coordinate location and map not available");
         } else {
@@ -54,6 +57,24 @@ public class RestaurantFragment extends Fragment {
                             , restaurant.getAddress(), restaurant.getPhone(),
                             restaurant.getRating());
                     startActivity(intent);
+                }
+            });
+        }
+
+        if(restaurant.getLatitude() == 0.0 && restaurant.getLongitude() == 0.0)
+        {
+            mShowDirections.setText(restaurant.getName() + "coordinate location and map not available");
+        }
+        else
+        {
+            mShowDirections.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String url = "http://maps.google.com/maps?" +
+                            "saddr="+restaurant.getLatitude()+","+restaurant.getLongitude()+"" +
+                            "&daddr="+restaurant.getLatitude()+","+restaurant.getLongitude()+"&mode=driving";
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+
                 }
             });
         }

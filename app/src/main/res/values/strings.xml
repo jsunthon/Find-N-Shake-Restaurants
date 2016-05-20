@@ -53,4 +53,6 @@
     <string name="pref_category_seafood_title">Seafood</string>
     <string name="pref_category_italian_title">Italian</string>
     <string name="pref_category_greek_title">Greek</string>
+
+    <string name="directions">Get Directions</string>
 </resources>
