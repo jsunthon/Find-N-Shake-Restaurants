@@ -61,6 +61,11 @@ public class RestaurantFragment extends Fragment {
             });
         }
 
+        Intent intent = getActivity().getIntent();
+        Bundle bundle =  intent.getExtras();
+
+
+
         if(restaurant.getLatitude() == 0.0 && restaurant.getLongitude() == 0.0)
         {
             mShowDirections.setText(restaurant.getName() + "coordinate location and map not available");

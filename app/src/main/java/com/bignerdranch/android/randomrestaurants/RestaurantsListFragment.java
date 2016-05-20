@@ -6,9 +6,9 @@ import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,19 +28,18 @@ import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
 import org.scribe.builder.ServiceBuilder;
 import org.scribe.model.OAuthRequest;
 import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -287,8 +286,20 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_LATITUDE = "latitude";
             final String YELP_LONGITUDE = "longitude";
             final String YELP_CATEGORIES = "categories";
+            final String YELP_REGION = "region";
+            final String YELP_CENTER = "center";
+
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
+
+            //get current location
+            JSONObject region = response.getJSONObject(YELP_REGION);
+            JSONObject center = region.getJSONObject(YELP_CENTER);
+            String currentLatitude = center.getString(YELP_LATITUDE);
+            String currentLongitude = center.getString(YELP_LONGITUDE);
+            Log.v(LOG_TAG_FETCH_TASK, "Current Latitude" +currentLatitude);
+            Log.v(LOG_TAG_FETCH_TASK, "Current Longitude" +currentLongitude);
+
 
             for (int i = 0; i < businesses.length(); i++) {
                 JSONObject business = businesses.getJSONObject(i);
@@ -470,6 +481,15 @@ public class RestaurantsListFragment extends Fragment {
         SEARCH_RADIUS = sharedPref.getString("search_radius", "10");
         SEARCH_LIMIT = sharedPref.getString("max_results", "5");
         SEARCH_SORT = sharedPref.getString("sort", "2");
+
+        //sending the latest current location
+        Intent locationIntent = new Intent(getActivity(),RestaurantFragment.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("currentLocation",SEARCH_LOCATION);
+
+        locationIntent.putExtras(bundle);
+       // startActivity(locationIntent);
+
     }
 
     private String parseAddress(JSONArray jsonAddress) throws JSONException {
