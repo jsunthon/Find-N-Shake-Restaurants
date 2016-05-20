@@ -3,7 +3,6 @@ package com.bignerdranch.android.randomrestaurants;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
@@ -19,7 +18,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,11 +54,11 @@ public class RestaurantsListFragment extends Fragment {
 
     //Yelp api variables
     private static final String API_HOST = "api.yelp.com";
-    private static final String DEFAULT_TERM = "restaurants";
-    private static String LOCATION = "90706"; //zip code
-    private static final int DEFAULT_SEARCH_RADIUS = 10; //in miles
-    private static final int DEFAULT_SEARCH_LIMIT = 20;
-    private static final String SORT = "2"; //sort of "2" means we will sort from highest to lowest rated
+    private static final String SEARCH_TERM = "restaurants";
+    private static String SEARCH_LOCATION = "90706"; //zip code
+    private static String SEARCH_RADIUS = "10"; //in miles
+    private static String SEARCH_LIMIT = "20";
+    private static String SEARCH_SORT = "2"; //sort of "2" means we will sort from highest to lowest rated
     private static final String SEARCH_PATH = "/v2/search";
     private OAuthService service;
     private Token accessToken;
@@ -119,14 +117,14 @@ public class RestaurantsListFragment extends Fragment {
      * @param categoryFilter Specify which restaurant categories to search. Comma delimited string
      * @return JSON string that represents the YELP API response
      */
-    public String searchForRestaurantsByLocation(String term, String location, double miles, String categoryFilter, int offset) {
+    public String searchForRestaurantsByLocation(String term, String location, String searchLimit, String miles, String categoryFilter, int offset) {
         OAuthRequest request = createOAuthRequest(SEARCH_PATH);
         request.addQuerystringParameter("term", term);
         request.addQuerystringParameter("location", location);
-        request.addQuerystringParameter("limit", String.valueOf(DEFAULT_SEARCH_LIMIT));
-        request.addQuerystringParameter("radius_filter", Double.toString(convertMilesToMeters(miles)));
+        request.addQuerystringParameter("limit", String.valueOf(searchLimit));
+        request.addQuerystringParameter("radius_filter", Double.toString(convertMilesToMeters(Double.parseDouble(miles))));
         request.addQuerystringParameter("category_filter", categoryFilter);
-        request.addQuerystringParameter("sort", SORT);
+        request.addQuerystringParameter("sort", SEARCH_SORT);
         request.addQuerystringParameter("offset", Integer.toString(offset));
         return sendRequestAndGetResponse(request);
     }
@@ -204,9 +202,9 @@ public class RestaurantsListFragment extends Fragment {
         populateCategoryFilter(categories); //update
         String categoryFilterString = parseRandomizedFilter(categoryFilter);
 
-        //verify that our settings are category filter is taking place
-        printFilters(categoryFilter);
-        LOCATION = getLocationPref();
+//        //verify that our settings are category filter is taking place
+//        printFilters(categoryFilter);
+        updateSearchPrefs();
         reviewsTask.execute(categoryFilterString);
     }
 
@@ -300,7 +298,7 @@ public class RestaurantsListFragment extends Fragment {
                 try {
                     restaurantPhone = business.getString(YELP_PHONE);
                     Log.v(LOG_TAG_FETCH_TASK, "Got restaurant phone: " + restaurantPhone);
-                } catch (JSONException e){
+                } catch (JSONException e) {
                     Log.e(LOG_TAG_FETCH_TASK, "Restaurant phone # for " + restaurantName + " not available.");
                 }
                 double restaurantRating = business.getDouble(YELP_RATING);
@@ -345,7 +343,7 @@ public class RestaurantsListFragment extends Fragment {
             String filterCategories = (String) params[0];
             Log.v(LOG_TAG_FETCH_TASK, "Categories to search: " + filterCategories);
             int offset = generateOffset();
-            String yelpDataJsonStr = searchForRestaurantsByLocation(DEFAULT_TERM, LOCATION, DEFAULT_SEARCH_RADIUS, filterCategories, offset);
+            String yelpDataJsonStr = searchForRestaurantsByLocation(SEARCH_TERM, SEARCH_LOCATION, SEARCH_LIMIT, SEARCH_RADIUS, filterCategories, offset);
             Log.v(LOG_TAG_FETCH_TASK, "YELP STR LEN" + yelpDataJsonStr.length());
             Log.v(LOG_TAG_FETCH_TASK, "YELP STR" + yelpDataJsonStr);
             restaurantLab.resetRestaurants();
@@ -466,9 +464,12 @@ public class RestaurantsListFragment extends Fragment {
     }
 
     //Get the value of the location preference
-    private String getLocationPref() {
+    private void updateSearchPrefs() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
-        return sharedPref.getString("location", "");
+        SEARCH_LOCATION = sharedPref.getString("location", "");
+        SEARCH_RADIUS = sharedPref.getString("search_radius", "10");
+        SEARCH_LIMIT = sharedPref.getString("max_results", "5");
+        SEARCH_SORT = sharedPref.getString("sort", "2");
     }
 
     private String parseAddress(JSONArray jsonAddress) throws JSONException {
@@ -493,6 +494,7 @@ public class RestaurantsListFragment extends Fragment {
         }
         return categories;
     }
+
     //handle shake events
     private void setUpShake() {
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);

@@ -9,9 +9,24 @@
     <string name="pref_geo_title">Geographical</string>
     <string name="pref_geo_key">geo</string>
 
+    <string name="pref_sort_title">Sorting</string>
+    <string name="pref_sort_key">sort</string>
+
     <string name="pref_location_label">Location</string>
     <string name="pref_location_key" translatable="false">location</string>
     <string name="pref_location_default" translatable="false">90032</string>
+
+    <string name="pref_max_results_label">Maximum Number of Results</string>
+    <string name="pref_max_results_key" translatable="false">max_results</string>
+    <string name="pref_max_results_default" translatable="false">5</string>
+
+    <string name="pref_search_radius_label">Search Radius in Miles</string>
+    <string name="pref_search_radius_key" translatable="false">search_radius</string>
+    <string name="pref_search_radius_default" translatable="false">10</string>
+
+    <string name="pref_sort_by_label">Sort By</string>
+    <string name="pref_sort_by_key" translatable="false">sort</string>
+    <string name="pref_sort_by_default" translatable="false">2</string>
 
     <!-- Setting Headers-->
     <string name="pref_categories_title">Restaurant Categories</string>
