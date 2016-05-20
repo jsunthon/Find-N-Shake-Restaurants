@@ -6,11 +6,23 @@
         android:key="@string/pref_geo_key"
         android:title="@string/pref_geo_title">
         <EditTextPreference
-            android:defaultValue="90706"
+            android:defaultValue="@string/pref_location_default"
             android:inputType="text"
             android:key="@string/pref_location_key"
             android:singleLine="true"
             android:title="@string/pref_location_label"/>
+        <EditTextPreference
+            android:defaultValue="@string/pref_search_radius_default"
+            android:inputType="text"
+            android:key="@string/pref_search_radius_key"
+            android:singleLine="true"
+            android:title="@string/pref_search_radius_label"/>
+        <EditTextPreference
+            android:defaultValue="@string/pref_max_results_default"
+            android:inputType="text"
+            android:key="@string/pref_max_results_key"
+            android:singleLine="true"
+            android:title="@string/pref_max_results_label"/>
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/pref_key_category_settings"
