@@ -297,8 +297,8 @@ public class RestaurantsListFragment extends Fragment {
             JSONObject center = region.getJSONObject(YELP_CENTER);
             Double currentLatitude = Double.parseDouble(center.getString(YELP_LATITUDE));
             Double currentLongitude = Double.parseDouble(center.getString(YELP_LONGITUDE));
-            Log.v(LOG_TAG_FETCH_TASK, "Current Latitude" +currentLatitude);
-            Log.v(LOG_TAG_FETCH_TASK, "Current Longitude" +currentLongitude);
+            Log.v(LOG_TAG_FETCH_TASK, "Current Latitude" + currentLatitude);
+            Log.v(LOG_TAG_FETCH_TASK, "Current Longitude" + currentLongitude);
 
 
             for (int i = 0; i < businesses.length(); i++) {
@@ -483,14 +483,6 @@ public class RestaurantsListFragment extends Fragment {
         SEARCH_RADIUS = sharedPref.getString("search_radius", "10");
         SEARCH_LIMIT = sharedPref.getString("max_results", "5");
         SEARCH_SORT = sharedPref.getString("sort", "2");
-
-        //sending the latest current location
-        Intent locationIntent = new Intent(getActivity(),RestaurantFragment.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("currentLocation",SEARCH_LOCATION);
-
-        locationIntent.putExtras(bundle);
-       // startActivity(locationIntent);
 
     }
 
