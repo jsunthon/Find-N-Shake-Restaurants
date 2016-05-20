@@ -18,11 +18,14 @@ public class Restaurant {
     private String ratingUrl;
     private double latitude;
     private double longitude;
+    private double currentLatitude;
+    private double currentLongitude;
 
     public Restaurant(String name, String phone, double rating,
                       String address, String imageUrl,
                       String snippetImageUrl, String ratingUrl,
                       double latitude, double longitude,
+                      double currentLatitude, double currentLongitude,
                       String categories) {
         mId = UUID.randomUUID(); //random ID for a restaurant is auto generated
         this.name = name;
@@ -34,6 +37,8 @@ public class Restaurant {
         this.ratingUrl = ratingUrl;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.currentLatitude = currentLatitude;
+        this.currentLongitude = currentLongitude;
         this.categories = categories;
     }
 
@@ -75,6 +80,22 @@ public class Restaurant {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public double getCurrentLatitude() {
+        return currentLatitude;
+    }
+
+    public void setCurrentLatitude(double currentLatitude) {
+        this.currentLatitude = currentLatitude;
+    }
+
+    public double getCurrentLongitude() {
+        return currentLongitude;
+    }
+
+    public void setCurrentLongitude(double currentLongitude) {
+        this.currentLongitude = currentLongitude;
     }
 
     public UUID getId() {
