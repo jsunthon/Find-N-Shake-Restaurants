@@ -17,12 +17,22 @@
             android:key="@string/pref_search_radius_key"
             android:singleLine="true"
             android:title="@string/pref_search_radius_label"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="@string/pref_sort_key"
+        android:title="@string/pref_sort_title">
         <EditTextPreference
             android:defaultValue="@string/pref_max_results_default"
             android:inputType="text"
             android:key="@string/pref_max_results_key"
             android:singleLine="true"
             android:title="@string/pref_max_results_label"/>
+        <ListPreference
+            android:key="@string/pref_sort_by_key"
+            android:title="@string/pref_sort_title"
+            android:summary="Sort results by distance or ratings"
+            android:entries="@array/sortentries"
+            android:entryValues="@array/sortvalues" />
     </PreferenceCategory>
     <PreferenceCategory
         android:key="@string/pref_key_category_settings"

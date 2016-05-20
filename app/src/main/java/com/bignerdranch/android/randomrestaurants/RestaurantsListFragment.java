@@ -58,7 +58,7 @@ public class RestaurantsListFragment extends Fragment {
     private static String SEARCH_LOCATION = "90706"; //zip code
     private static String SEARCH_RADIUS = "10"; //in miles
     private static String SEARCH_LIMIT = "20";
-    private static final String SORT = "2"; //sort of "2" means we will sort from highest to lowest rated
+    private static String SEARCH_SORT = "2"; //sort of "2" means we will sort from highest to lowest rated
     private static final String SEARCH_PATH = "/v2/search";
     private OAuthService service;
     private Token accessToken;
@@ -124,7 +124,7 @@ public class RestaurantsListFragment extends Fragment {
         request.addQuerystringParameter("limit", String.valueOf(searchLimit));
         request.addQuerystringParameter("radius_filter", Double.toString(convertMilesToMeters(Double.parseDouble(miles))));
         request.addQuerystringParameter("category_filter", categoryFilter);
-        request.addQuerystringParameter("sort", SORT);
+        request.addQuerystringParameter("sort", SEARCH_SORT);
         request.addQuerystringParameter("offset", Integer.toString(offset));
         return sendRequestAndGetResponse(request);
     }
@@ -469,6 +469,7 @@ public class RestaurantsListFragment extends Fragment {
         SEARCH_LOCATION = sharedPref.getString("location", "");
         SEARCH_RADIUS = sharedPref.getString("search_radius", "10");
         SEARCH_LIMIT = sharedPref.getString("max_results", "5");
+        SEARCH_SORT = sharedPref.getString("sort", "2");
     }
 
     private String parseAddress(JSONArray jsonAddress) throws JSONException {

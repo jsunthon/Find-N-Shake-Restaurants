@@ -53,6 +53,7 @@ public class SettingsActivity extends PreferenceActivity
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_location_key)));
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_max_results_key)));
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_search_radius_key)));
+        bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sort_by_key)));
     }
 
     /**
