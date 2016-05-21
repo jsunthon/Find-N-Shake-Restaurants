@@ -60,7 +60,7 @@ public class RestaurantFragment extends Fragment {
                 }
             });
         }
-        
+
 
         if(restaurant.getLatitude() == 0.0 && restaurant.getLongitude() == 0.0)
         {
