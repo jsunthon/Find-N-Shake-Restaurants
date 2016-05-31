@@ -3,6 +3,7 @@ package com.bignerdranch.android.randomrestaurants;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -72,9 +73,10 @@ public class RestaurantFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     String url = "http://maps.google.com/maps?" +
-                            "saddr="+restaurant.getLatitude()+","+restaurant.getLongitude()+"" +
+                            "saddr="+restaurant.getCurrentLatitude()+","+restaurant.getCurrentLongitude()+"" +
                             "&daddr="+restaurant.getLatitude()+","+restaurant.getLongitude()+"&mode=driving";
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(mapIntent);
 
                 }
             });
