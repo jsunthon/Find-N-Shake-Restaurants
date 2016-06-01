@@ -38,5 +38,6 @@ dependencies {
     compile 'com.googlecode.json-simple:json-simple:1.1.1'
     compile 'com.google.android.gms:play-services-maps:8.4.0'
     compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
+    compile 'com.google.android.gms:play-services:9.0.1'
 
 }

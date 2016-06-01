@@ -1,12 +1,14 @@
 package com.bignerdranch.android.randomrestaurants;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
@@ -32,6 +35,11 @@ public class RestaurantFragment extends Fragment {
     private Button mShowMap;
     private Button mShowDirections;
     public RestaurantFragment() {
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -62,7 +70,6 @@ public class RestaurantFragment extends Fragment {
             });
         }
 
-
         if(restaurant.getLatitude() == 0.0 && restaurant.getLongitude() == 0.0)
         {
             mShowDirections.setText(restaurant.getName() + "coordinate location and map not available");
@@ -72,14 +79,28 @@ public class RestaurantFragment extends Fragment {
             mShowDirections.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+//                    Intent intent = getActivity().getIntent();
+//                    if(intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
+//                        String mCurrentLatitude = intent.getStringExtra(Intent.EXTRA_TEXT);
+//                        String mCurrentLongitude = intent.getStringExtra(Intent.EXTRA_TEXT);
+
+                    //Log.v(LOG_TAG, "The Current Latitude is :" +mCurrentLatitude);
+                    //Log.v(LOG_TAG, "The Current Longitude is :" +mCurrentLongitude);
+                    SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
+                    Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", ""));
+                    Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", ""));
+                    Toast.makeText(getActivity(), "mCurrentLatitudeValue is :" + mCurrentLatitude, Toast.LENGTH_SHORT).show();
+
                     String url = "http://maps.google.com/maps?" +
-                            "saddr="+restaurant.getCurrentLatitude()+","+restaurant.getCurrentLongitude()+"" +
-                            "&daddr="+restaurant.getLatitude()+","+restaurant.getLongitude()+"&mode=driving";
+                            "saddr=" + mCurrentLatitude + "," + mCurrentLongitude + "" +
+                            "&daddr=" + restaurant.getLatitude() + "," + restaurant.getLongitude() + "&mode=driving";
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(mapIntent);
+                }
 
                 }
-            });
+            );
+
         }
 
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(restaurant.getName());
@@ -123,4 +144,6 @@ public class RestaurantFragment extends Fragment {
             bmImage.setImageBitmap(result);
         }
     }
+
+
 }
