@@ -94,10 +94,8 @@ public class RestaurantActivity extends AppCompatActivity
                 PackageManager.PERMISSION_GRANTED) {
 
             if (mLocation != null) {
-                Log.v(LOG_TAG, "getLatitude is :" + mLocation.getLatitude()
-                        + "getLongitude is :" + mLocation.getLongitude());
-                Toast.makeText(this, "The latitude is: "+mLocation.getLatitude(), Toast.LENGTH_SHORT).show();
-
+                Log.v(LOG_TAG, "The Current Latitude is :" + mLocation.getLatitude()
+                        + "and Current Longitude is :" + mLocation.getLongitude());
                 SharedPreferences sharedPrefs = getSharedPreferences("location_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor sharedEdit = sharedPrefs.edit();
                 sharedEdit.putString("mLatitude", String.valueOf(mLocation.getLatitude()));

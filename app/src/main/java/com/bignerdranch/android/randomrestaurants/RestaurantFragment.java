@@ -9,14 +9,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
@@ -34,12 +38,29 @@ public class RestaurantFragment extends Fragment {
     private final String LOG_TAG = getClass().getSimpleName();
     private Button mShowMap;
     private Button mShowDirections;
+    private ShareActionProvider mShareActionProvider;
+    private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinder ";
     public RestaurantFragment() {
+        setHasOptionsMenu(true);
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.detail_fragment, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_item_share);
+
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        if(mShareActionProvider != null)
+        {
+            mShareActionProvider.setShareIntent(createShareRestaurantIntent());
+        }
+        else
+            Log.d(LOG_TAG, "Share Action Provider is null");
     }
 
     @Override
@@ -89,7 +110,6 @@ public class RestaurantFragment extends Fragment {
                     SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
                     Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", ""));
                     Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", ""));
-                    Toast.makeText(getActivity(), "mCurrentLatitudeValue is :" + mCurrentLatitude, Toast.LENGTH_SHORT).show();
 
                     String url = "http://maps.google.com/maps?" +
                             "saddr=" + mCurrentLatitude + "," + mCurrentLongitude + "" +
@@ -143,6 +163,15 @@ public class RestaurantFragment extends Fragment {
         protected void onPostExecute(Bitmap result) {
             bmImage.setImageBitmap(result);
         }
+    }
+
+    private Intent createShareRestaurantIntent()
+    {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, restaurant.getName() + RESTAURANT_SHARE_HASHTAG);
+        return shareIntent;
     }
 
 

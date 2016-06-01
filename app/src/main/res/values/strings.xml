@@ -70,4 +70,5 @@
     <string name="pref_category_greek_title">Greek</string>
 
     <string name="directions">Get Directions</string>
+    <string name="action_share">Share</string>
 </resources>
