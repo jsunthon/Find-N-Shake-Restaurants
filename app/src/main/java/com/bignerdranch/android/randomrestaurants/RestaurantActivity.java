@@ -3,6 +3,7 @@ package com.bignerdranch.android.randomrestaurants;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -56,7 +57,7 @@ public class RestaurantActivity extends AppCompatActivity
             mGoogleApiClient.connect();
         }
         else
-            Toast.makeText(this, "Not connected...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Not Connected", Toast.LENGTH_SHORT).show();
 
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -79,7 +80,6 @@ public class RestaurantActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
     @Override
     protected void onStop() {
         mGoogleApiClient.disconnect();
@@ -98,6 +98,16 @@ public class RestaurantActivity extends AppCompatActivity
                         + "getLongitude is :" + mLocation.getLongitude());
                 Toast.makeText(this, "The latitude is: "+mLocation.getLatitude(), Toast.LENGTH_SHORT).show();
 
+                SharedPreferences sharedPrefs = getSharedPreferences("location_prefs", MODE_PRIVATE);
+                SharedPreferences.Editor sharedEdit = sharedPrefs.edit();
+                sharedEdit.putString("mLatitude", String.valueOf(mLocation.getLatitude()));
+                sharedEdit.putString("mLongitude", String.valueOf(mLocation.getLongitude()));
+                sharedEdit.commit();
+//               Intent intent = new Intent(this, RestaurantFragment.class)
+//                        .putExtra(Intent.EXTRA_TEXT, String.valueOf(mLocation.getLatitude()))
+//                        .putExtra(Intent.EXTRA_TEXT, String.valueOf(mLocation.getLongitude()));
+//                startActivity(intent);
+
             } else {
                 Toast.makeText(this, "Access Location permission DENIED", Toast.LENGTH_SHORT).show();
             }
@@ -105,16 +115,6 @@ public class RestaurantActivity extends AppCompatActivity
         else{
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 200);
         }
-    }
-
-    @Override
-    public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
-            Toast.makeText(this, "Connection Failed", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionSuspended ( int i){
-            Toast.makeText(this, "Connection Suspended", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -128,6 +128,16 @@ public class RestaurantActivity extends AppCompatActivity
                 }
             }
         }
+    }
+
+    @Override
+    public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
+            Toast.makeText(this, "Connection Failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionSuspended ( int i){
+            Toast.makeText(this, "Connection Suspended", Toast.LENGTH_SHORT).show();
     }
 
     protected synchronized void buildGoogleApiClient() {
