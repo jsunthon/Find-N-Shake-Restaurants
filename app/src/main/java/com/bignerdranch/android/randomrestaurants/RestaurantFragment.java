@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -83,17 +84,19 @@ public class RestaurantFragment extends Fragment {
 //                        String mCurrentLatitude = intent.getStringExtra(Intent.EXTRA_TEXT);
 //                        String mCurrentLongitude = intent.getStringExtra(Intent.EXTRA_TEXT);
 
-                        //Log.v(LOG_TAG, "The Current Latitude is :" +mCurrentLatitude);
-                        //Log.v(LOG_TAG, "The Current Longitude is :" +mCurrentLongitude);
+                    //Log.v(LOG_TAG, "The Current Latitude is :" +mCurrentLatitude);
+                    //Log.v(LOG_TAG, "The Current Longitude is :" +mCurrentLongitude);
                     SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
-                    String mCurrentLatitudeValue =  sharedPrefs.getString("mLatitude", "");
-                    Toast.makeText(getActivity(), "mCurrentLatitudeValue is :"+mCurrentLatitudeValue, Toast.LENGTH_SHORT).show();
-                    }
-//                    String url = "http://maps.google.com/maps?" +
-//                            "saddr="+restaurant.getCurrentLatitude()+","+restaurant.getCurrentLongitude()+"" +
-//                            "&daddr="+restaurant.getLatitude()+","+restaurant.getLongitude()+"&mode=driving";
-//                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-//                    startActivity(mapIntent);
+                    Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", ""));
+                    Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", ""));
+                    Toast.makeText(getActivity(), "mCurrentLatitudeValue is :" + mCurrentLatitude, Toast.LENGTH_SHORT).show();
+
+                    String url = "http://maps.google.com/maps?" +
+                            "saddr=" + mCurrentLatitude + "," + mCurrentLongitude + "" +
+                            "&daddr=" + restaurant.getLatitude() + "," + restaurant.getLongitude() + "&mode=driving";
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity(mapIntent);
+                }
 
                 }
             );
