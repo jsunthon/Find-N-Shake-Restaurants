@@ -39,7 +39,7 @@ public class RestaurantFragment extends Fragment {
     private Button mShowMap;
     private Button mShowDirections;
     private ShareActionProvider mShareActionProvider;
-    private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinder ";
+    private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
     public RestaurantFragment() {
         setHasOptionsMenu(true);
     }
@@ -100,13 +100,6 @@ public class RestaurantFragment extends Fragment {
             mShowDirections.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Intent intent = getActivity().getIntent();
-//                    if(intent != null && intent.hasExtra(Intent.EXTRA_TEXT)){
-//                        String mCurrentLatitude = intent.getStringExtra(Intent.EXTRA_TEXT);
-//                        String mCurrentLongitude = intent.getStringExtra(Intent.EXTRA_TEXT);
-
-                    //Log.v(LOG_TAG, "The Current Latitude is :" +mCurrentLatitude);
-                    //Log.v(LOG_TAG, "The Current Longitude is :" +mCurrentLongitude);
                     SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
                     Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", ""));
                     Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", ""));
@@ -170,7 +163,10 @@ public class RestaurantFragment extends Fragment {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, restaurant.getName() + RESTAURANT_SHARE_HASHTAG);
+        shareIntent.putExtra(Intent.EXTRA_TEXT, restaurant.getName()
+                +",  "
+                + restaurant.getAddress()
+                + RESTAURANT_SHARE_HASHTAG);
         return shareIntent;
     }
 
