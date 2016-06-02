@@ -34,7 +34,6 @@ public class RestaurantActivity extends AppCompatActivity
     public static final String EXTRA_RESTAURANT_ID =
             "com.bignerdranch.android.randomrestaurants.resId";
     private GoogleApiClient mGoogleApiClient;
-    private Location mLocation;
 
     public static Intent newIntent(Context packageContext, UUID restaurantId) {
         Intent intent = new Intent(packageContext, RestaurantActivity.class);
@@ -53,6 +52,7 @@ public class RestaurantActivity extends AppCompatActivity
         }
 
         buildGoogleApiClient();
+
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
         }
@@ -89,25 +89,18 @@ public class RestaurantActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Location mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
 
             if (mLocation != null) {
-                Log.v(LOG_TAG, "getLatitude is :" + mLocation.getLatitude()
-                        + "getLongitude is :" + mLocation.getLongitude());
-                Toast.makeText(this, "The latitude is: "+mLocation.getLatitude(), Toast.LENGTH_SHORT).show();
-
+                Log.v(LOG_TAG, "The Current Latitude is :" + mLocation.getLatitude()
+                        + "and Current Longitude is :" + mLocation.getLongitude());
                 SharedPreferences sharedPrefs = getSharedPreferences("location_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor sharedEdit = sharedPrefs.edit();
                 sharedEdit.putString("mLatitude", String.valueOf(mLocation.getLatitude()));
                 sharedEdit.putString("mLongitude", String.valueOf(mLocation.getLongitude()));
                 sharedEdit.commit();
-//               Intent intent = new Intent(this, RestaurantFragment.class)
-//                        .putExtra(Intent.EXTRA_TEXT, String.valueOf(mLocation.getLatitude()))
-//                        .putExtra(Intent.EXTRA_TEXT, String.valueOf(mLocation.getLongitude()));
-//                startActivity(intent);
-
             } else {
                 Toast.makeText(this, "Access Location permission DENIED", Toast.LENGTH_SHORT).show();
             }

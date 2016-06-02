@@ -286,20 +286,10 @@ public class RestaurantsListFragment extends Fragment {
             final String YELP_LATITUDE = "latitude";
             final String YELP_LONGITUDE = "longitude";
             final String YELP_CATEGORIES = "categories";
-            final String YELP_REGION = "region";
-            final String YELP_CENTER = "center";
+
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
-
-            //get current location
-            JSONObject region = response.getJSONObject(YELP_REGION);
-            JSONObject center = region.getJSONObject(YELP_CENTER);
-            Double currentLatitude = Double.parseDouble(center.getString(YELP_LATITUDE));
-            Double currentLongitude = Double.parseDouble(center.getString(YELP_LONGITUDE));
-            Log.v(LOG_TAG_FETCH_TASK, "Current Latitude" + currentLatitude);
-            Log.v(LOG_TAG_FETCH_TASK, "Current Longitude" + currentLongitude);
-
 
             for (int i = 0; i < businesses.length(); i++) {
                 JSONObject business = businesses.getJSONObject(i);
@@ -346,7 +336,6 @@ public class RestaurantsListFragment extends Fragment {
                         restaurantRating, restaurantAddress,
                         imageUrl, snippetImageUrl, ratingImgUrl,
                         restaurantLatitude, restaurantLongitude,
-                        currentLatitude, currentLongitude,
                         restaurantCategories));
             }
         }
