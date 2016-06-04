@@ -40,7 +40,9 @@ public class RestaurantFragment extends Fragment {
     private Button mShowDirections;
     private ShareActionProvider mShareActionProvider;
     private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
+
     public RestaurantFragment() {
+
         setHasOptionsMenu(true);
     }
 
@@ -101,8 +103,8 @@ public class RestaurantFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
-                    Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", ""));
-                    Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", ""));
+                    Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", " "));
+                    Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", " "));
 
                     String url = "http://maps.google.com/maps?" +
                             "saddr=" + mCurrentLatitude + "," + mCurrentLongitude + "" +
@@ -110,7 +112,6 @@ public class RestaurantFragment extends Fragment {
                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                     startActivity(mapIntent);
                 }
-
                 }
             );
 

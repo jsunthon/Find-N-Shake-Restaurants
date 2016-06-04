@@ -53,11 +53,10 @@ public class RestaurantActivity extends AppCompatActivity
 
         buildGoogleApiClient();
 
-        if (mGoogleApiClient != null) {
+        if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
-        }
         else
-            Toast.makeText(this, "Not Connected", Toast.LENGTH_SHORT).show();
+            Log.v(LOG_TAG, "Not Connected");
 
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -94,13 +93,13 @@ public class RestaurantActivity extends AppCompatActivity
                 PackageManager.PERMISSION_GRANTED) {
 
             if (mLocation != null) {
-                Log.v(LOG_TAG, "The Current Latitude is :" + mLocation.getLatitude()
-                        + "and Current Longitude is :" + mLocation.getLongitude());
                 SharedPreferences sharedPrefs = getSharedPreferences("location_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor sharedEdit = sharedPrefs.edit();
                 sharedEdit.putString("mLatitude", String.valueOf(mLocation.getLatitude()));
                 sharedEdit.putString("mLongitude", String.valueOf(mLocation.getLongitude()));
                 sharedEdit.commit();
+                Log.v(LOG_TAG, "The Current Latitude is :" + mLocation.getLatitude()
+                        + "and Current Longitude is :" + mLocation.getLongitude());
             } else {
                 Toast.makeText(this, "Access Location permission DENIED", Toast.LENGTH_SHORT).show();
             }
@@ -125,12 +124,12 @@ public class RestaurantActivity extends AppCompatActivity
 
     @Override
     public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
-            Toast.makeText(this, "Connection Failed", Toast.LENGTH_SHORT).show();
+        Log.v(LOG_TAG,"Connection Failed");
     }
 
     @Override
     public void onConnectionSuspended ( int i){
-            Toast.makeText(this, "Connection Suspended", Toast.LENGTH_SHORT).show();
+            Log.v(LOG_TAG,"Connection Suspended");
     }
 
     protected synchronized void buildGoogleApiClient() {
