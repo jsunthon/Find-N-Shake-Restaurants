@@ -229,7 +229,7 @@ public class RestaurantsListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = RestaurantActivity.newIntent(getActivity(), mRestaurant.getId());
+            Intent intent = RestaurantPagerActivity.newIntent(getActivity(), mRestaurant.getId());
             startActivity(intent);
         }
     }

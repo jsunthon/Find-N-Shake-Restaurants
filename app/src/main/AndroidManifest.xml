@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.bignerdranch.android.randomrestaurants.RestaurantActivity"
+            android:name="com.bignerdranch.android.randomrestaurants.RestaurantPagerActivity"
             android:label="@string/title_activity_detail"
             android:parentActivityName="com.bignerdranch.android.randomrestaurants.RestaurantListActivity">
             <meta-data

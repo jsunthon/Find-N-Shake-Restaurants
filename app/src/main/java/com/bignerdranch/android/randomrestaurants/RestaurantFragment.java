@@ -32,20 +32,31 @@ import java.util.UUID;
  */
 public class RestaurantFragment extends Fragment {
 
-    private Restaurant restaurant;
+    private Restaurant mRestaurant;
     private final String LOG_TAG = getClass().getSimpleName();
     private Button mShowMap;
     private Button mShowDirections;
     private ShareActionProvider mShareActionProvider;
     private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
+    public static final String ARG_RESTAURANT_ID = "restaurant_id";
 
     public RestaurantFragment() {
         setHasOptionsMenu(true);
     }
 
+    public static RestaurantFragment newInstance(UUID restaurantId) {
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_RESTAURANT_ID, restaurantId);
+        RestaurantFragment fragment = new RestaurantFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UUID restaurantId = (UUID) getArguments().getSerializable(ARG_RESTAURANT_ID);
+        mRestaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
     }
 
     @Override
@@ -61,28 +72,36 @@ public class RestaurantFragment extends Fragment {
     }
 
     @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            getActivity().setTitle(mRestaurant.getName());
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
 
-        final UUID restaurantId = (UUID) getActivity().getIntent().getSerializableExtra(RestaurantActivity.EXTRA_RESTAURANT_ID);
-        restaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
+//        final UUID restaurantId = (UUID) getActivity().getIntent().getSerializableExtra(RestaurantActivity.EXTRA_RESTAURANT_ID);
+//        mRestaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
 
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
 
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
 
-        if (restaurant.getLatitude() == 0.00 && restaurant.getLongitude() == 0.00) {
-            mShowMap.setText(restaurant.getName() + " coordinate location and map not available");
+        if (mRestaurant.getLatitude() == 0.00 && mRestaurant.getLongitude() == 0.00) {
+            mShowMap.setText(mRestaurant.getName() + " coordinate location and map not available");
         } else {
-            mShowMap.setText(restaurant.getName() + " Map Location");
+            mShowMap.setText(mRestaurant.getName() + " Map Location");
             mShowMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = GoogleMapActivity.newIntent(getActivity(), restaurant.getLatitude(),
-                            restaurant.getLongitude(), restaurant.getName()
-                            , restaurant.getAddress(), restaurant.getPhone(),
-                            restaurant.getRating());
+                    Intent intent = GoogleMapActivity.newIntent(getActivity(), mRestaurant.getLatitude(),
+                            mRestaurant.getLongitude(), mRestaurant.getName()
+                            , mRestaurant.getAddress(), mRestaurant.getPhone(),
+                            mRestaurant.getRating());
                     startActivity(intent);
                 }
             });
@@ -96,7 +115,7 @@ public class RestaurantFragment extends Fragment {
 
                                                        String url = "http://maps.google.com/maps?" +
                                                                "saddr=" + mCurrentLatitude + "," + mCurrentLongitude + "" +
-                                                               "&daddr=" + restaurant.getLatitude() + "," + restaurant.getLongitude() + "&mode=driving";
+                                                               "&daddr=" + mRestaurant.getLatitude() + "," + mRestaurant.getLongitude() + "&mode=driving";
                                                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                                                        startActivity(mapIntent);
                                                    }
@@ -105,20 +124,20 @@ public class RestaurantFragment extends Fragment {
         }
 
 
-        ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(restaurant.getName());
-        ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(restaurant.getAddress());
+        ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(mRestaurant.getName());
+        ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(mRestaurant.getAddress());
 
-        if (restaurant.getPhone() != "123") {
-            ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText(restaurant.getPhone());
+        if (mRestaurant.getPhone() != "123") {
+            ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText(mRestaurant.getPhone());
         } else {
             ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText("Phone number not available.");
         }
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.main_img_view))
-                .execute(restaurant.getImageUrl());
+                .execute(mRestaurant.getImageUrl());
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.snippet_img_view))
-                .execute(restaurant.getSnippetImageUrl());
+                .execute(mRestaurant.getSnippetImageUrl());
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.rating_img_view))
-                .execute(restaurant.getRatingUrl());
+                .execute(mRestaurant.getRatingUrl());
         return rootView;
     }
 
@@ -151,9 +170,9 @@ public class RestaurantFragment extends Fragment {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, restaurant.getName()
+        shareIntent.putExtra(Intent.EXTRA_TEXT, mRestaurant.getName()
                 + ",  "
-                + restaurant.getAddress()
+                + mRestaurant.getAddress()
                 + RESTAURANT_SHARE_HASHTAG);
         return shareIntent;
     }
