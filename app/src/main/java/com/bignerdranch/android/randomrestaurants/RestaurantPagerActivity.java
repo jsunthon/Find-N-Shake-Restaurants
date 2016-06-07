@@ -11,41 +11,48 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import com.bignerdranch.android.models.Restaurant;
+import com.bignerdranch.android.models.RestaurantLab;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import java.util.List;
 import java.util.UUID;
 
-public class RestaurantActivity extends AppCompatActivity
-                                implements GoogleApiClient.OnConnectionFailedListener,
-                                GoogleApiClient.ConnectionCallbacks,
-                                ActivityCompat.OnRequestPermissionsResultCallback {
+/**
+ * Created by jsunthon on 6/7/2016.
+ */
+public class RestaurantPagerActivity extends AppCompatActivity
+        implements GoogleApiClient.OnConnectionFailedListener,
+        GoogleApiClient.ConnectionCallbacks,
+        ActivityCompat.OnRequestPermissionsResultCallback {
 
-    private final String LOG_TAG = RestaurantActivity.class.getSimpleName();
-    public static final String EXTRA_RESTAURANT_ID =
-            "com.bignerdranch.android.randomrestaurants.resId";
+    private final String LOG_TAG = RestaurantPagerActivity.class.getSimpleName();
+    public static final String EXTRA_RESTAURANT_ID = "com.bignerdranch.android.randomrestaurants.resId";
     private GoogleApiClient mGoogleApiClient;
+    private ViewPager mViewPager;
+    private List<Restaurant> mRestaurants;
 
-    public static Intent newIntent(Context packageContext, UUID restaurantId) {
-        Intent intent = new Intent(packageContext, RestaurantActivity.class);
-        intent.putExtra(EXTRA_RESTAURANT_ID, restaurantId);
+    public static Intent newIntent(Context packageContext, UUID restraurantId) {
+        Intent intent = new Intent(packageContext, RestaurantPagerActivity.class);
+        intent.putExtra(EXTRA_RESTAURANT_ID, restraurantId);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurant);
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new RestaurantFragment())
-                    .commit();
-        }
+        setContentView(R.layout.activity_restaurant_pager);
 
         buildGoogleApiClient();
 
@@ -53,6 +60,33 @@ public class RestaurantActivity extends AppCompatActivity
             mGoogleApiClient.connect();
         else
             Log.v(LOG_TAG, "Not Connected");
+
+        UUID restaurantId = (UUID) getIntent().getSerializableExtra(EXTRA_RESTAURANT_ID);
+        mRestaurants = RestaurantLab.get(this).getRestaurants();
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        mViewPager = (ViewPager) findViewById(R.id.activity_restaurant_pager_view_pager);
+        mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
+            @Override
+            public Fragment getItem(int position) {
+                Restaurant restaurant = mRestaurants.get(position);
+                return RestaurantFragment.newInstance(restaurant.getId());
+            }
+
+            @Override
+            public int getCount() {
+                return mRestaurants.size();
+            }
+        });
+
+        for (int i = 0; i < mRestaurants.size(); i++) {
+            Restaurant restaurant = mRestaurants.get(i);
+            if (restaurant.getId().equals(restaurantId)) {
+                mViewPager.setCurrentItem(i);
+                break;
+            }
+        }
 
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -125,7 +159,7 @@ public class RestaurantActivity extends AppCompatActivity
 
     @Override
     public void onConnectionSuspended ( int i){
-            Log.v(LOG_TAG,"Connection Suspended");
+        Log.v(LOG_TAG,"Connection Suspended");
     }
 
     protected synchronized void buildGoogleApiClient() {
