@@ -1,23 +1,14 @@
 package com.bignerdranch.android.googleplayservice;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.bignerdranch.android.randomrestaurants.R;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
@@ -32,7 +23,6 @@ public class GoogleMapFragment extends SupportMapFragment {
     private String restaurantPhone;
     private double restaurantRating;
     private GoogleMap mMap;
-    private GoogleApiClient mClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,25 +68,14 @@ public class GoogleMapFragment extends SupportMapFragment {
         }
         LatLng itemPoint = new LatLng(latitude, longitude);
         Log.v(LOG_TAG, "lat, long in updateUI: " + itemPoint.latitude + " longitude: " + itemPoint.longitude);
-//        LatLng myPoint = new LatLng(
-//                mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
         MarkerOptions restaurantMarker = new MarkerOptions()
                 .position(itemPoint);
         restaurantMarker.title(restaurantName);
-        String description = generateRestaurantDesc();
+        String description = restaurantAddress + "\n" + restaurantPhone + "\n" + "Rating: " + restaurantRating;
         restaurantMarker.snippet(description);
         mMap.clear();
         mMap.addMarker(restaurantMarker);
-//        LatLngBounds bounds = new LatLngBounds.Builder()
-//                .include(itemPoint)
-//                .build();
-//        int margin = getResources().getDimensionPixelSize(R.dimen.map_inset_margin);
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(itemPoint,15);
         mMap.animateCamera(update);
     }
-
-    private String generateRestaurantDesc() {
-        return restaurantAddress + "\n" + restaurantPhone + "\n" + "Rating: " + restaurantRating;
-    }
-
 }

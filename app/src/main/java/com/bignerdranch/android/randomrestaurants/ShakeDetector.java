@@ -1,14 +1,12 @@
 package com.bignerdranch.android.randomrestaurants;
 
-
 /**
- * Created by jsunthon on 5/10/2016.
+ * Credits go to Jake McReynolds at http://jasonmcreynolds.com/?p=388
  */
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.util.FloatMath;
 
 public class ShakeDetector implements SensorEventListener {
 
