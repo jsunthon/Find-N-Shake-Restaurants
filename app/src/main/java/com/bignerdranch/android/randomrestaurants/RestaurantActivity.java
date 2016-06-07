@@ -16,20 +16,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.bignerdranch.android.models.Restaurant;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
-
-import java.util.List;
 import java.util.UUID;
 
 public class RestaurantActivity extends AppCompatActivity
                                 implements GoogleApiClient.OnConnectionFailedListener,
                                 GoogleApiClient.ConnectionCallbacks,
                                 ActivityCompat.OnRequestPermissionsResultCallback {
-    private List<Restaurant> mRestaurants;
+
     private final String LOG_TAG = RestaurantActivity.class.getSimpleName();
     public static final String EXTRA_RESTAURANT_ID =
             "com.bignerdranch.android.randomrestaurants.resId";

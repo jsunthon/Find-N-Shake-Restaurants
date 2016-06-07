@@ -21,11 +21,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
-
 import java.io.InputStream;
 import java.util.UUID;
 
@@ -42,7 +40,6 @@ public class RestaurantFragment extends Fragment {
     private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
 
     public RestaurantFragment() {
-
         setHasOptionsMenu(true);
     }
 
@@ -57,11 +54,9 @@ public class RestaurantFragment extends Fragment {
         MenuItem menuItem = menu.findItem(R.id.menu_item_share);
 
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
-        if(mShareActionProvider != null)
-        {
+        if (mShareActionProvider != null) {
             mShareActionProvider.setShareIntent(createShareRestaurantIntent());
-        }
-        else
+        } else
             Log.d(LOG_TAG, "Share Action Provider is null");
     }
 
@@ -80,7 +75,7 @@ public class RestaurantFragment extends Fragment {
         if (restaurant.getLatitude() == 0.00 && restaurant.getLongitude() == 0.00) {
             mShowMap.setText(restaurant.getName() + " coordinate location and map not available");
         } else {
-            mShowMap.setText("Find " + restaurant.getName());
+            mShowMap.setText(restaurant.getName() + " Map Location");
             mShowMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -91,31 +86,24 @@ public class RestaurantFragment extends Fragment {
                     startActivity(intent);
                 }
             });
-        }
 
-        if(restaurant.getLatitude() == 0.0 && restaurant.getLongitude() == 0.0)
-        {
-            mShowDirections.setText(restaurant.getName() + "coordinate location and map not available");
-        }
-        else
-        {
             mShowDirections.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
-                    Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", " "));
-                    Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", " "));
+                                                   @Override
+                                                   public void onClick(View v) {
+                                                       SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
+                                                       Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", " "));
+                                                       Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", " "));
 
-                    String url = "http://maps.google.com/maps?" +
-                            "saddr=" + mCurrentLatitude + "," + mCurrentLongitude + "" +
-                            "&daddr=" + restaurant.getLatitude() + "," + restaurant.getLongitude() + "&mode=driving";
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(mapIntent);
-                }
-                }
+                                                       String url = "http://maps.google.com/maps?" +
+                                                               "saddr=" + mCurrentLatitude + "," + mCurrentLongitude + "" +
+                                                               "&daddr=" + restaurant.getLatitude() + "," + restaurant.getLongitude() + "&mode=driving";
+                                                       Intent mapIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                                       startActivity(mapIntent);
+                                                   }
+                                               }
             );
-
         }
+
 
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(restaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(restaurant.getAddress());
@@ -159,17 +147,14 @@ public class RestaurantFragment extends Fragment {
         }
     }
 
-    private Intent createShareRestaurantIntent()
-    {
+    private Intent createShareRestaurantIntent() {
         Intent shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_TEXT, restaurant.getName()
-                +",  "
+                + ",  "
                 + restaurant.getAddress()
                 + RESTAURANT_SHARE_HASHTAG);
         return shareIntent;
     }
-
-
 }

@@ -15,18 +15,13 @@
  */
 package com.bignerdranch.android.randomrestaurants;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.

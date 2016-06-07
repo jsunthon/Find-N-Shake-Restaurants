@@ -4,16 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.bignerdranch.android.randomrestaurants.R;
 import com.bignerdranch.android.randomrestaurants.SettingsActivity;
-
-import java.util.UUID;
 
 /**
  * Created by jsunthon on 5/11/2016.

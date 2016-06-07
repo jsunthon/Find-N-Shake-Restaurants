@@ -20,11 +20,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,7 +32,6 @@ import org.scribe.model.Response;
 import org.scribe.model.Token;
 import org.scribe.model.Verb;
 import org.scribe.oauth.OAuthService;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,41 +43,40 @@ import java.util.Random;
  */
 public class RestaurantsListFragment extends Fragment {
 
+    private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
+    private final String LOG_TAG_RESTAURANT_LIST = this.getClass().getSimpleName();
+
+    //Yelp api variables
+    private static final String API_HOST = "api.yelp.com";
+    private static final String SEARCH_TERM = "restaurants";
+    private static final String SEARCH_PATH = "/v2/search";
+    private static String SEARCH_LOCATION;
+    private static String SEARCH_RADIUS;
+    private static String SEARCH_LIMIT;
+    private static String SEARCH_SORT;
+    private OAuthService service;
+    private Token accessToken;
+
     //Shake sensor variables
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private ShakeDetector mShakeDetector;
 
-    //Yelp api variables
-    private static final String API_HOST = "api.yelp.com";
-    private static final String SEARCH_TERM = "restaurants";
-    private static String SEARCH_LOCATION = "90706"; //zip code
-    private static String SEARCH_RADIUS = "10"; //in miles
-    private static String SEARCH_LIMIT = "20";
-    private static String SEARCH_SORT = "2"; //sort of "2" means we will sort from highest to lowest rated
-    private static final String SEARCH_PATH = "/v2/search";
-    private OAuthService service;
-    private Token accessToken;
-
     //adapter for the list view
     private RecyclerView mRestaurantRecyclerView;
-    private RestaurantAdapter mAdapter; //adapter for the restaurantrecycerview
+    private RestaurantAdapter mAdapter;
 
     //contain a mapping of categories vs checked , e.g. "chinese : 1" means chinese checked
-    public HashMap<String, Integer> categoryFilter = new HashMap<>();
+    private HashMap<String, Integer> categoryFilter;
 
     //an array of all the possible categories in Settings
-    String[] categories = {
+    private final String[] categories = {
             "japanese", "tradamerican", "chinese",
             "indpak", "pizza", "newamerican",
             "mediterranean", "mexican", "mideastern",
             "french", "thai", "steak", "latin",
             "seafood", "italian", "greek"
     };
-
-    //Logging constants used to indicate where a piece of code executed
-    private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
-    private final String LOG_TAG_RESTAURANT_LIST = this.getClass().getSimpleName();
 
     /**
      * Set up the yelp api oauth credentials in the constructor
@@ -200,9 +196,6 @@ public class RestaurantsListFragment extends Fragment {
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
         populateCategoryFilter(categories); //update
         String categoryFilterString = parseRandomizedFilter(categoryFilter);
-
-//        //verify that our settings are category filter is taking place
-//        printFilters(categoryFilter);
         updateSearchPrefs();
         reviewsTask.execute(categoryFilterString);
     }
@@ -379,6 +372,7 @@ public class RestaurantsListFragment extends Fragment {
 
     private void populateCategoryFilter(String[] keys) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        categoryFilter = new HashMap<>();
         for (String key : keys) {
             boolean isChecked = sharedPref.getBoolean(key, false);
             if (isChecked) {
@@ -465,14 +459,12 @@ public class RestaurantsListFragment extends Fragment {
         return offset;
     }
 
-    //Get the value of the location preference
     private void updateSearchPrefs() {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         SEARCH_LOCATION = sharedPref.getString("location", "");
         SEARCH_RADIUS = sharedPref.getString("search_radius", "10");
         SEARCH_LIMIT = sharedPref.getString("max_results", "5");
         SEARCH_SORT = sharedPref.getString("sort", "2");
-
     }
 
     private String parseAddress(JSONArray jsonAddress) throws JSONException {

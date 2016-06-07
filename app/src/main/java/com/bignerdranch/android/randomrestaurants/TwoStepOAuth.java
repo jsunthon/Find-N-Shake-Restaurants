@@ -1,13 +1,11 @@
 package com.bignerdranch.android.randomrestaurants;
 
-/**
- * Created by jsunthon on 5/9/2016.
- */
 import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
 
 /**
  * Generic service provider for two-step OAuth10a.
+ * Taken from the official Yelp api Github
  */
 public class TwoStepOAuth extends DefaultApi10a {
 
