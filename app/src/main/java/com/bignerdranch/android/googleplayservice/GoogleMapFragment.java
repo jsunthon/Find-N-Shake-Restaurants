@@ -40,6 +40,7 @@ public class GoogleMapFragment extends SupportMapFragment {
         restaurantRating = getActivity().getIntent()
                 .getDoubleExtra(GoogleMapActivity.EXTRA_RESTAURANT_RATING, 0.00);
 
+        getActivity().setTitle(restaurantName + " Map Location");
         Log.v(LOG_TAG, "Got latitude: " + latitude);
         Log.v(LOG_TAG, "Got longitude: " + longitude);
         Log.v(LOG_TAG, "Got name: " + restaurantName);

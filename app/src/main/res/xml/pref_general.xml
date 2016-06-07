@@ -19,8 +19,8 @@
             android:title="@string/pref_search_radius_label"/>
     </PreferenceCategory>
     <PreferenceCategory
-        android:key="@string/pref_sort_key"
-        android:title="@string/pref_sort_title">
+        android:key="@string/pref_results_key"
+        android:title="@string/pref_results_title">
         <EditTextPreference
             android:defaultValue="@string/pref_max_results_default"
             android:inputType="text"
@@ -30,7 +30,7 @@
         <ListPreference
             android:key="@string/pref_sort_by_key"
             android:title="@string/pref_sort_title"
-            android:summary="Sort results by distance or ratings"
+            android:summary="Order results by distance or rating"
             android:entries="@array/sortentries"
             android:entryValues="@array/sortvalues" />
     </PreferenceCategory>
