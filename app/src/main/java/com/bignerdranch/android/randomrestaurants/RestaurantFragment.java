@@ -90,7 +90,7 @@ public class RestaurantFragment extends Fragment {
         if (mRestaurant.getLatitude() == 0.00 && mRestaurant.getLongitude() == 0.00) {
             mShowMap.setText(mRestaurant.getName() + " coordinate location and map not available");
         } else {
-            mShowMap.setText("Map Location - " + mRestaurant.getName());
+            mShowMap.setText("Map Location");
             mShowMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

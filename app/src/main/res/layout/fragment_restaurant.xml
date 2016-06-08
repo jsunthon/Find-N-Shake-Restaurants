@@ -76,7 +76,7 @@
         <Button
             style="@style/MapButton"
             android:id="@+id/google_map_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
@@ -87,11 +87,12 @@
 
         <Button
             style="@style/MapButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/directions"
             android:id="@+id/google_map_directions"
             android:textAppearance="?android:attr/textAppearanceMedium"
+            android:gravity="center"
             android:layout_margin="5dp"
             android:layout_marginBottom="25dp"/>
     </LinearLayout>
