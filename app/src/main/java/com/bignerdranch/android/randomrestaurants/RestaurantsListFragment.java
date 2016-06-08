@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -37,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import android.os.Vibrator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -148,7 +148,7 @@ public class RestaurantsListFragment extends Fragment {
         mRestaurantRecyclerView
                 .addItemDecoration(
                         new HorizontalDividerItemDecoration.Builder(getActivity())
-                                .colorResId(R.color.colorPrimary)
+                                .colorResId(R.color.orange)
                                 .sizeResId(R.dimen.divider)
                                 .build());
         retrieveUI();
@@ -192,7 +192,6 @@ public class RestaurantsListFragment extends Fragment {
     }
 
     private void makeAPICall() {
-        Toast.makeText(getContext(), "Retrieving restaurants...", Toast.LENGTH_SHORT).show();
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
         populateCategoryFilter(categories); //update
         String categoryFilterString = parseRandomizedFilter(categoryFilter);
@@ -500,6 +499,8 @@ public class RestaurantsListFragment extends Fragment {
 
             @Override
             public void onShake(int count) {
+                Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
                 makeAPICall();
             }
         });

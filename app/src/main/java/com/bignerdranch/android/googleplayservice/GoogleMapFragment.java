@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
- * Created by jsunthon on 5/11/2016.
+ * Credits to Big Nerd Ranch Guide
  */
 public class GoogleMapFragment extends SupportMapFragment {
     private final String LOG_TAG = this.getClass().getSimpleName();
@@ -55,7 +55,6 @@ public class GoogleMapFragment extends SupportMapFragment {
                     @Override
                     public void onMapLoaded() {
                         Log.v(LOG_TAG, "Map has loaded. Calling updateUI...");
-                        Toast.makeText(getContext(), "Going to " + restaurantName + "....", Toast.LENGTH_SHORT).show();
                         updateUI();
                     }
                 });

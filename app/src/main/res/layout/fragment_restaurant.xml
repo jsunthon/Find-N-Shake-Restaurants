@@ -74,6 +74,7 @@
             android:layout_margin="5dp"/>
 
         <Button
+            style="@style/MapButton"
             android:id="@+id/google_map_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -85,7 +86,7 @@
             android:layout_margin="5dp"/>
 
         <Button
-            style="?android:attr/buttonStyleSmall"
+            style="@style/MapButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/directions"
@@ -93,8 +94,6 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_margin="5dp"
             android:layout_marginBottom="25dp"/>
-
-
     </LinearLayout>
 
 </LinearLayout>
