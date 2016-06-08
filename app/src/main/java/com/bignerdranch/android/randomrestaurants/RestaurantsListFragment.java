@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import android.os.Vibrator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -500,6 +501,8 @@ public class RestaurantsListFragment extends Fragment {
 
             @Override
             public void onShake(int count) {
+                Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(500);
                 makeAPICall();
             }
         });
