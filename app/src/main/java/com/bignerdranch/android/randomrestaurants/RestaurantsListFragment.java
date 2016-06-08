@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
@@ -193,7 +192,6 @@ public class RestaurantsListFragment extends Fragment {
     }
 
     private void makeAPICall() {
-        Toast.makeText(getContext(), "Retrieving restaurants...", Toast.LENGTH_SHORT).show();
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
         populateCategoryFilter(categories); //update
         String categoryFilterString = parseRandomizedFilter(categoryFilter);
