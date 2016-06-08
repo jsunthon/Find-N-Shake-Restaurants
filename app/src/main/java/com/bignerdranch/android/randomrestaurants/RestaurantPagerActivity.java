@@ -21,25 +21,23 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+
 import java.util.List;
 import java.util.UUID;
 
 /**
  * Created by jsunthon on 6/7/2016.
  */
-public class RestaurantPagerActivity extends AppCompatActivity
-        implements GoogleApiClient.OnConnectionFailedListener,
-        GoogleApiClient.ConnectionCallbacks,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+public class RestaurantPagerActivity extends AppCompatActivity {
 
     private final String LOG_TAG = RestaurantPagerActivity.class.getSimpleName();
     public static final String EXTRA_RESTAURANT_ID = "com.bignerdranch.android.randomrestaurants.resId";
-    private GoogleApiClient mGoogleApiClient;
     private ViewPager mViewPager;
     private List<Restaurant> mRestaurants;
 
@@ -53,13 +51,6 @@ public class RestaurantPagerActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_restaurant_pager);
-
-        buildGoogleApiClient();
-
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
-        else
-            Log.v(LOG_TAG, "Not Connected");
 
         UUID restaurantId = (UUID) getIntent().getSerializableExtra(EXTRA_RESTAURANT_ID);
         mRestaurants = RestaurantLab.get(this).getRestaurants();
@@ -107,66 +98,5 @@ public class RestaurantPagerActivity extends AppCompatActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onStop() {
-        mGoogleApiClient.disconnect();
-        super.onStop();
-    }
-
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Location mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED) {
-
-            if (mLocation != null) {
-                SharedPreferences sharedPrefs = getSharedPreferences("location_prefs", MODE_PRIVATE);
-                SharedPreferences.Editor sharedEdit = sharedPrefs.edit();
-                sharedEdit.putString("mLatitude", String.valueOf(mLocation.getLatitude()));
-                sharedEdit.putString("mLongitude", String.valueOf(mLocation.getLongitude()));
-                sharedEdit.commit();
-                Log.v(LOG_TAG, "The Current Latitude is :" + mLocation.getLatitude()
-                        + "and Current Longitude is :" + mLocation.getLongitude());
-            } else {
-                Toast.makeText(this, "Access Location permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-        }
-        else{
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 200);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch(requestCode) {
-            case 200: {
-                if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                {
-                    onConnected(null);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void onConnectionFailed (@NonNull ConnectionResult connectionResult){
-        Log.v(LOG_TAG,"Connection Failed");
-    }
-
-    @Override
-    public void onConnectionSuspended ( int i){
-        Log.v(LOG_TAG,"Connection Suspended");
-    }
-
-    protected synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
     }
 }
