@@ -101,6 +101,12 @@ public class RestaurantListActivity extends AppCompatActivity
             case 200: {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onConnected(null);
+                } else {
+                    if (savedInstanceState == null) {
+                        getSupportFragmentManager().beginTransaction()
+                                .add(R.id.container, new RestaurantsListFragment())
+                                .commitAllowingStateLoss();
+                    }
                 }
             }
         }
