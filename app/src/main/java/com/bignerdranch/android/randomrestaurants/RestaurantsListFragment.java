@@ -219,6 +219,7 @@ public class RestaurantsListFragment extends Fragment {
     private class RestaurantHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView mRestaurantNameTextView;
         private TextView mRestaurantCategoryTextView;
+        private TextView mRestaurantDistanceTextView;
 
         private Restaurant mRestaurant;
 
@@ -227,17 +228,15 @@ public class RestaurantsListFragment extends Fragment {
             itemView.setOnClickListener(this);
             mRestaurantNameTextView = (TextView) itemView.findViewById(R.id.list_item_restaurant_textview);
             mRestaurantCategoryTextView = (TextView) itemView.findViewById(R.id.restaurant_category_textview);
+            mRestaurantDistanceTextView = (TextView) itemView.findViewById(R.id.restaurant_distance_textview);
         }
 
         public void bindRestaurant(Restaurant restaurant) {
             mRestaurant = restaurant;
             mRestaurantNameTextView.setText(mRestaurant.getName());
             mRestaurantCategoryTextView.setText(mRestaurant.getCategories());
-//            Log.v(LOG_TAG_RESTAURANT_LIST, "From my loc: " + mRestaurant.getName() + " " + mCurrentLatitude + " " + mCurrentLongitude);
-//            Log.v(LOG_TAG_RESTAURANT_LIST, "From my res loc: " + mRestaurant.getName() + " " + mRestaurant.getLatitude() + " " + mRestaurant.getLongitude());
             String restaurantDist = getRestaurantDist(mCurrentLatitude, mCurrentLongitude, mRestaurant.getLatitude(), mRestaurant.getLongitude());
-//
-//            Log.v(LOG_TAG_RESTAURANT_LIST, "FROM: " + mRestaurant.getName() + ": " + restaurantDist + " miles");
+            mRestaurantDistanceTextView.setText(restaurantDist + " miles");
         }
 
         @Override
