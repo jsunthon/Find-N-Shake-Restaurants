@@ -233,18 +233,11 @@ public class RestaurantsListFragment extends Fragment {
             mRestaurant = restaurant;
             mRestaurantNameTextView.setText(mRestaurant.getName());
             mRestaurantCategoryTextView.setText(mRestaurant.getCategories());
-            Log.v(LOG_TAG_RESTAURANT_LIST, "From: " + mRestaurant.getName() + " " + mCurrentLongitude + " " + mCurrentLatitude);
+//            Log.v(LOG_TAG_RESTAURANT_LIST, "From my loc: " + mRestaurant.getName() + " " + mCurrentLatitude + " " + mCurrentLongitude);
+//            Log.v(LOG_TAG_RESTAURANT_LIST, "From my res loc: " + mRestaurant.getName() + " " + mRestaurant.getLatitude() + " " + mRestaurant.getLongitude());
+            String restaurantDist = getRestaurantDist(mCurrentLatitude, mCurrentLongitude, mRestaurant.getLatitude(), mRestaurant.getLongitude());
 //
-//            String distance = getRestaurantDist
-//            double latitude2 = Math.toRadians(location.getLatitude());
-//            double longitude2 = Math.toRadians(location.getLongitude());
-//            double longitudeDelta = Math.abs(longitude2 - longitude1);
-//            double centralAngle = Math.acos(Math.sin(latitude1) * Math.sin(latitude2)
-//                    + Math.cos(latitude1) * Math.cos(latitude2) * Math.cos(longitudeDelta));
-//
-//            // in miles
-//            double distance = centralAngle * 3961;
-//            location.setMiles((double)Math.round(distance * 100d) / 100d);
+//            Log.v(LOG_TAG_RESTAURANT_LIST, "FROM: " + mRestaurant.getName() + ": " + restaurantDist + " miles");
         }
 
         @Override
@@ -252,6 +245,17 @@ public class RestaurantsListFragment extends Fragment {
             Intent intent = RestaurantPagerActivity.newIntent(getActivity(), mRestaurant.getId());
             startActivity(intent);
         }
+    }
+
+    private String getRestaurantDist(double mCurrentLatitude, double mCurrentLongitude, double restaurantLatitude, double restaurantLongitude) {
+        double longitudeDelta = Math.abs(Math.toRadians(restaurantLongitude) - Math.toRadians(mCurrentLongitude));
+        double mCurrentLatRads = Math.toRadians(mCurrentLatitude);
+        double restaurantLatRads = Math.toRadians(restaurantLatitude);
+        double centralAngle = Math.acos(Math.sin(mCurrentLatRads) * Math.sin(restaurantLatRads)
+                    + Math.cos(mCurrentLatRads) * Math.cos(restaurantLatRads) * Math.cos(longitudeDelta));
+        double distance = centralAngle * 3961;
+        distance = (double) Math.round(distance * 100d) / 100d;
+        return String.valueOf(distance);
     }
 
     private class RestaurantAdapter extends RecyclerView.Adapter<RestaurantHolder> {
