@@ -18,6 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ListView;
 import android.widget.TextView;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
@@ -56,6 +59,7 @@ public class RestaurantsListFragment extends Fragment {
     private static String SEARCH_SORT;
     private OAuthService service;
     private Token accessToken;
+    private Animation anim;
 
     //Shake sensor variables
     private SensorManager mSensorManager;
@@ -134,6 +138,7 @@ public class RestaurantsListFragment extends Fragment {
         if (numberOfRestaurants == 0) {
             makeAPICall();
         }
+        anim = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
     }
 
     @Override
@@ -502,6 +507,7 @@ public class RestaurantsListFragment extends Fragment {
                 Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(500);
                 makeAPICall();
+                mRestaurantRecyclerView.startAnimation(anim);
             }
         });
     }
