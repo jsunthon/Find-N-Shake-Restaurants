@@ -148,7 +148,7 @@ public class RestaurantsListFragment extends Fragment {
         mRestaurantRecyclerView
                 .addItemDecoration(
                         new HorizontalDividerItemDecoration.Builder(getActivity())
-                                .colorResId(R.color.colorPrimary)
+                                .colorResId(R.color.orange)
                                 .sizeResId(R.dimen.divider)
                                 .build());
         retrieveUI();

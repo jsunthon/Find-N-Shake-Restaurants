@@ -84,17 +84,13 @@ public class RestaurantFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
 
-//        final UUID restaurantId = (UUID) getActivity().getIntent().getSerializableExtra(RestaurantActivity.EXTRA_RESTAURANT_ID);
-//        mRestaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
-
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
-
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
 
         if (mRestaurant.getLatitude() == 0.00 && mRestaurant.getLongitude() == 0.00) {
             mShowMap.setText(mRestaurant.getName() + " coordinate location and map not available");
         } else {
-            mShowMap.setText(mRestaurant.getName() + " Map Location");
+            mShowMap.setText("Map Location - " + mRestaurant.getName());
             mShowMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
