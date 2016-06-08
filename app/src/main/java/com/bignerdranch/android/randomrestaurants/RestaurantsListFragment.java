@@ -40,9 +40,6 @@ import java.util.Map;
 import java.util.Random;
 import android.os.Vibrator;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class RestaurantsListFragment extends Fragment {
 
     private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
@@ -140,8 +137,8 @@ public class RestaurantsListFragment extends Fragment {
             makeAPICall();
         }
         SharedPreferences sharedPref = getActivity().getSharedPreferences("location_prefs", 0);
-        mCurrentLatitude = Double.valueOf(sharedPref.getString("mLatitude", " "));
-        mCurrentLongitude = Double.valueOf(sharedPref.getString("mLongitude", " "));
+        mCurrentLatitude = Double.valueOf(sharedPref.getString("mLatitude", "0"));
+        mCurrentLongitude = Double.valueOf(sharedPref.getString("mLongitude", "0"));
         anim = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
     }
 
@@ -235,8 +232,11 @@ public class RestaurantsListFragment extends Fragment {
             mRestaurant = restaurant;
             mRestaurantNameTextView.setText(mRestaurant.getName());
             mRestaurantCategoryTextView.setText(mRestaurant.getCategories());
-            String restaurantDist = getRestaurantDist(mCurrentLatitude, mCurrentLongitude, mRestaurant.getLatitude(), mRestaurant.getLongitude());
-            mRestaurantDistanceTextView.setText(restaurantDist + " miles");
+
+            if (mCurrentLatitude != 0.00 && mCurrentLongitude != 0.00) {
+                String restaurantDist = getRestaurantDist(mCurrentLatitude, mCurrentLongitude, mRestaurant.getLatitude(), mRestaurant.getLongitude());
+                mRestaurantDistanceTextView.setText(restaurantDist + " miles");
+            }
         }
 
         @Override
@@ -244,17 +244,6 @@ public class RestaurantsListFragment extends Fragment {
             Intent intent = RestaurantPagerActivity.newIntent(getActivity(), mRestaurant.getId());
             startActivity(intent);
         }
-    }
-
-    private String getRestaurantDist(double mCurrentLatitude, double mCurrentLongitude, double restaurantLatitude, double restaurantLongitude) {
-        double longitudeDelta = Math.abs(Math.toRadians(restaurantLongitude) - Math.toRadians(mCurrentLongitude));
-        double mCurrentLatRads = Math.toRadians(mCurrentLatitude);
-        double restaurantLatRads = Math.toRadians(restaurantLatitude);
-        double centralAngle = Math.acos(Math.sin(mCurrentLatRads) * Math.sin(restaurantLatRads)
-                    + Math.cos(mCurrentLatRads) * Math.cos(restaurantLatRads) * Math.cos(longitudeDelta));
-        double distance = centralAngle * 3961;
-        distance = (double) Math.round(distance * 100d) / 100d;
-        return String.valueOf(distance);
     }
 
     private class RestaurantAdapter extends RecyclerView.Adapter<RestaurantHolder> {
@@ -511,6 +500,17 @@ public class RestaurantsListFragment extends Fragment {
             }
         }
         return categories;
+    }
+
+    private String getRestaurantDist(double mCurrentLatitude, double mCurrentLongitude, double restaurantLatitude, double restaurantLongitude) {
+        double longitudeDelta = Math.abs(Math.toRadians(restaurantLongitude) - Math.toRadians(mCurrentLongitude));
+        double mCurrentLatRads = Math.toRadians(mCurrentLatitude);
+        double restaurantLatRads = Math.toRadians(restaurantLatitude);
+        double centralAngle = Math.acos(Math.sin(mCurrentLatRads) * Math.sin(restaurantLatRads)
+                + Math.cos(mCurrentLatRads) * Math.cos(restaurantLatRads) * Math.cos(longitudeDelta));
+        double distance = centralAngle * 3961;
+        distance = (double) Math.round(distance * 100d) / 100d;
+        return String.valueOf(distance);
     }
 
     //handle shake events

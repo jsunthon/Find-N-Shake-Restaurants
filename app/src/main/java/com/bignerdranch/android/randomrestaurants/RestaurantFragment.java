@@ -87,21 +87,12 @@ public class RestaurantFragment extends Fragment {
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
 
-        if (mRestaurant.getLatitude() == 0.00 && mRestaurant.getLongitude() == 0.00) {
-            mShowMap.setText(mRestaurant.getName() + " coordinate location and map not available");
-        } else {
-            mShowMap.setText("Map Location");
-            mShowMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = GoogleMapActivity.newIntent(getActivity(), mRestaurant.getLatitude(),
-                            mRestaurant.getLongitude(), mRestaurant.getName()
-                            , mRestaurant.getAddress(), mRestaurant.getPhone(),
-                            mRestaurant.getRating());
-                    startActivity(intent);
-                }
-            });
+        SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
+        Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", "0"));
+        Double mCurrentLongitude = Double.valueOf(sharedPrefs.getString("mLongitude", "0"));
 
+        if (mCurrentLatitude != 0.00 && mCurrentLongitude != 0.00) {
+            mShowDirections.setVisibility(View.VISIBLE);
             mShowDirections.setOnClickListener(new View.OnClickListener() {
                                                    @Override
                                                    public void onClick(View v) {
@@ -117,8 +108,26 @@ public class RestaurantFragment extends Fragment {
                                                    }
                                                }
             );
+        } else {
+            mShowDirections.setVisibility(View.INVISIBLE);
         }
 
+        if (mRestaurant.getLatitude() == 0.00 && mRestaurant.getLongitude() == 0.00) {
+            mShowMap.setText(mRestaurant.getName() + " coordinate location and map not available");
+        } else {
+            mShowMap.setText("Map Location");
+            mShowMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = GoogleMapActivity.newIntent(getActivity(), mRestaurant.getLatitude(),
+                            mRestaurant.getLongitude(), mRestaurant.getName()
+                            , mRestaurant.getAddress(), mRestaurant.getPhone(),
+                            mRestaurant.getRating());
+                    startActivity(intent);
+                }
+            });
+
+        }
 
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(mRestaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(mRestaurant.getAddress());
