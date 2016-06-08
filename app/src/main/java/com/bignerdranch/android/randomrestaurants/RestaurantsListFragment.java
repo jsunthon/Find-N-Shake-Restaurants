@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
@@ -57,6 +56,8 @@ public class RestaurantsListFragment extends Fragment {
     private static String SEARCH_RADIUS;
     private static String SEARCH_LIMIT;
     private static String SEARCH_SORT;
+    private double mCurrentLatitude;
+    private double mCurrentLongitude;
     private OAuthService service;
     private Token accessToken;
     private Animation anim;
@@ -138,6 +139,9 @@ public class RestaurantsListFragment extends Fragment {
         if (numberOfRestaurants == 0) {
             makeAPICall();
         }
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("location_prefs", 0);
+        mCurrentLatitude = Double.valueOf(sharedPref.getString("mLatitude", " "));
+        mCurrentLongitude = Double.valueOf(sharedPref.getString("mLongitude", " "));
         anim = AnimationUtils.loadAnimation(getContext(), R.anim.shake);
     }
 
@@ -229,6 +233,18 @@ public class RestaurantsListFragment extends Fragment {
             mRestaurant = restaurant;
             mRestaurantNameTextView.setText(mRestaurant.getName());
             mRestaurantCategoryTextView.setText(mRestaurant.getCategories());
+            Log.v(LOG_TAG_RESTAURANT_LIST, "From: " + mRestaurant.getName() + " " + mCurrentLongitude + " " + mCurrentLatitude);
+//
+//            String distance = getRestaurantDist
+//            double latitude2 = Math.toRadians(location.getLatitude());
+//            double longitude2 = Math.toRadians(location.getLongitude());
+//            double longitudeDelta = Math.abs(longitude2 - longitude1);
+//            double centralAngle = Math.acos(Math.sin(latitude1) * Math.sin(latitude2)
+//                    + Math.cos(latitude1) * Math.cos(latitude2) * Math.cos(longitudeDelta));
+//
+//            // in miles
+//            double distance = centralAngle * 3961;
+//            location.setMiles((double)Math.round(distance * 100d) / 100d);
         }
 
         @Override
