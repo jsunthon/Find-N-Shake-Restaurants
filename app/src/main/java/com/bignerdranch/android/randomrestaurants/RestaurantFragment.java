@@ -2,13 +2,11 @@ package com.bignerdranch.android.randomrestaurants;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
@@ -24,7 +22,6 @@ import android.widget.TextView;
 import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
-import java.io.InputStream;
 import java.util.UUID;
 
 /**
@@ -34,11 +31,14 @@ public class RestaurantFragment extends Fragment {
 
     private Restaurant mRestaurant;
     private final String LOG_TAG = getClass().getSimpleName();
+    private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
+    private static final String DIALOG_IMG = "DialogImg";
+    private static final String ARG_RESTAURANT_ID = "restaurant_id";
     private Button mShowMap;
     private Button mShowDirections;
+    private ImageView mMainImgView;
+    private ImageView mSnippetImgView;
     private ShareActionProvider mShareActionProvider;
-    private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
-    public static final String ARG_RESTAURANT_ID = "restaurant_id";
 
     public RestaurantFragment() {
         setHasOptionsMenu(true);
@@ -83,7 +83,6 @@ public class RestaurantFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
-
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
 
@@ -137,38 +136,34 @@ public class RestaurantFragment extends Fragment {
         } else {
             ((TextView) rootView.findViewById(R.id.restaurant_phone_detail_text)).setText("Phone number not available.");
         }
-        new DownloadImageTask((ImageView) rootView.findViewById(R.id.main_img_view))
+
+        mMainImgView = (ImageView) rootView.findViewById(R.id.main_img_view);
+        mMainImgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+                ImageViewFragment imageViewFragment = ImageViewFragment.newInstance(mRestaurant.getName() + " Food Image", mRestaurant.getImageUrl());
+                imageViewFragment.show(manager, DIALOG_IMG);
+            }
+        });
+
+        mSnippetImgView = (ImageView) rootView.findViewById(R.id.snippet_img_view);
+        mSnippetImgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager manager = getFragmentManager();
+                ImageViewFragment imageViewFragment = ImageViewFragment.newInstance(mRestaurant.getName() + " Snippet Image", mRestaurant.getSnippetImageUrl());
+                imageViewFragment.show(manager, DIALOG_IMG);
+            }
+        });
+
+        new DownloadImageTask(mMainImgView)
                 .execute(mRestaurant.getImageUrl());
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.snippet_img_view))
                 .execute(mRestaurant.getSnippetImageUrl());
         new DownloadImageTask((ImageView) rootView.findViewById(R.id.rating_img_view))
                 .execute(mRestaurant.getRatingUrl());
         return rootView;
-    }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "Couldnt process or download the image...");
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
     }
 
     private Intent createShareRestaurantIntent() {
