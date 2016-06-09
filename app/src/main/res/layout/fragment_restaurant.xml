@@ -1,114 +1,130 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/scrollView" >
+<ScrollView android:id="@+id/scrollView"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-              android:padding="20dp"
-              tools:context=".RestaurantFragment">
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:orientation="vertical"
+                  android:padding="20dp"
+                  tools:context=".RestaurantFragment">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+            <com.joooonho.SelectableRoundedImageView
+                android:id="@+id/main_img_view"
+                android:layout_height="120dp"
+                android:layout_width="120dp"
+                android:layout_margin="20dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:scaleType="centerCrop"
+                app:sriv_border_color="@color/orange"
+                app:sriv_border_width="2dip"
+                app:sriv_left_bottom_corner_radius="10dip"
+                app:sriv_left_top_corner_radius="10dip"
+                app:sriv_right_bottom_corner_radius="10dip"
+                app:sriv_right_top_corner_radius="10dip"/>
 
-        <ImageView
-            android:id="@+id/main_img_view"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_margin="20dp"
-            android:padding="5dp"
-            android:background="@drawable/image_view"/>
+            <com.joooonho.SelectableRoundedImageView
+                android:id="@+id/snippet_img_view"
+                android:layout_height="120dp"
+                android:layout_width="120dp"
+                android:layout_margin="20dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:scaleType="centerCrop"
+                app:sriv_border_color="@color/orange"
+                app:sriv_border_width="2dip"
+                app:sriv_left_bottom_corner_radius="10dip"
+                app:sriv_left_top_corner_radius="10dip"
+                app:sriv_right_bottom_corner_radius="10dip"
+                app:sriv_right_top_corner_radius="10dip"/>
+        </LinearLayout>
 
-        <ImageView
-            android:id="@+id/snippet_img_view"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_margin="20dp"
-            android:padding="5dp"
-            android:background="@drawable/image_view"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="5dp"
-        android:padding="10dp"
-        android:textAlignment="center"
-        android:layout_gravity="center"
-        android:background="@drawable/restaurant_details">
-        <ImageView
-            android:id="@+id/rating_img_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"/>
-        <TextView
-            android:id="@+id/restaurant_name_detail_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="restaurant name"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/name"
-            android:layout_margin="5dp"
-            android:textStyle="bold"/>
-        <TextView
-            android:id="@+id/restaurant_address_detail_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/snippet_img_view"
-            android:layout_alignRight="@+id/snippet_img_view"
-            android:layout_centerVertical="true"
-            android:text="restaurant address"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_margin="5dp"/>
-
-        <TextView
-            android:id="@+id/restaurant_phone_detail_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/restaurant_address_detail_text"
-            android:layout_alignStart="@+id/restaurant_address_detail_text"
-            android:layout_below="@+id/restaurant_address_detail_text"
-            android:text="restaurant phone"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_margin="5dp"/>
-    </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textAlignment="center"
-        android:layout_gravity="center">
-        <Button
-            style="@style/MapButton"
-            android:id="@+id/google_map_btn"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:text="Map Location"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:layout_margin="5dp"/>
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:background="@drawable/restaurant_details"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:textAlignment="center">
 
-        <Button
-            style="@style/MapButton"
+            <ImageView
+                android:id="@+id/rating_img_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                android:id="@+id/restaurant_name_detail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="restaurant name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/name"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/restaurant_address_detail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignEnd="@+id/snippet_img_view"
+                android:layout_alignRight="@+id/snippet_img_view"
+                android:layout_centerVertical="true"
+                android:layout_margin="5dp"
+                android:text="restaurant address"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <TextView
+                android:id="@+id/restaurant_phone_detail_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/restaurant_address_detail_text"
+                android:layout_alignStart="@+id/restaurant_address_detail_text"
+                android:layout_below="@+id/restaurant_address_detail_text"
+                android:layout_margin="5dp"
+                android:text="restaurant phone"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/directions"
-            android:id="@+id/google_map_directions"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:gravity="center"
-            android:layout_margin="5dp"
-            android:layout_marginBottom="25dp"/>
-    </LinearLayout>
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:orientation="vertical"
+            android:textAlignment="center">
 
-</LinearLayout>
-    </ScrollView>
+            <Button
+                android:id="@+id/google_map_btn"
+                style="@style/MapButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_margin="5dp"
+                android:text="Map Location"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+            <Button
+                android:id="@+id/google_map_directions"
+                style="@style/MapButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_marginBottom="25dp"
+                android:gravity="center"
+                android:text="@string/directions"
+                android:textAppearance="?android:attr/textAppearanceMedium"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
