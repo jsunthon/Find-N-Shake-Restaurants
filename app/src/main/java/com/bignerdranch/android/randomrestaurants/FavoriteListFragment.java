@@ -29,6 +29,9 @@ public class FavoriteListFragment extends Fragment {
     private RestaurantAdapter mAdapter;
     private List<Restaurant> mRestaurants = new ArrayList();
     private FavoritesDbHelper db;
+    
+    public FavoriteListFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
