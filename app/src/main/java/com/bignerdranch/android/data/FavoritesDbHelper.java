@@ -3,6 +3,7 @@ package com.bignerdranch.android.data;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -71,5 +72,11 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
 
         long inserted = db.insert(TABLE_NAME, null, cv);
         return (inserted != -1);
+    }
+
+    public Cursor getAllData(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor result = db.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
+        return result;
     }
 }
