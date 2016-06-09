@@ -26,6 +26,7 @@ import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
 import java.util.UUID;
 
+// with help from Big Nerd Ranch Guide
 public class RestaurantFragment extends Fragment {
 
     private Restaurant mRestaurant;

@@ -12,7 +12,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
- * Credits to Big Nerd Ranch Guide
+ * Based off Big Nerd Ranch Guide
  */
 public class GoogleMapFragment extends SupportMapFragment {
     private final String LOG_TAG = this.getClass().getSimpleName();

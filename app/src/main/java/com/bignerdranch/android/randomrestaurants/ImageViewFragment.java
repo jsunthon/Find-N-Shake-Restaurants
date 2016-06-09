@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+// based off Big Nerd Ranch Guide
 public class ImageViewFragment extends DialogFragment {
     private ImageView mFoodImgView;
     private LinearLayout mLinearOuter;
@@ -47,6 +48,7 @@ public class ImageViewFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setView(mFoodImgView)
                 .setTitle(restaurantName)
+                .setPositiveButton(android.R.string.ok, null)
                 .create();
     }
 }
