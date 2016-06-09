@@ -31,8 +31,6 @@ public class MainActivity extends AppCompatActivity
         ActivityCompat.OnRequestPermissionsResultCallback {
     ViewPager mViewPager;
     TabLayout mTabLayout;
-
-    private Bundle savedInstanceState;
     private GoogleApiClient mGoogleApiClient;
     private final String LOG_TAG = getClass().getSimpleName();
 
@@ -42,7 +40,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         Log.v(LOG_TAG, " onCreate called");
-        this.savedInstanceState = savedInstanceState;
         buildGoogleApiClient();
         if (mGoogleApiClient != null)
             mGoogleApiClient.connect();
@@ -58,7 +55,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.favorites, menu);
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
