@@ -11,7 +11,7 @@ import java.io.InputStream;
 /**
  * Created by jsunthon on 6/8/2016.
  */
-class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
     ImageView bmImage;
