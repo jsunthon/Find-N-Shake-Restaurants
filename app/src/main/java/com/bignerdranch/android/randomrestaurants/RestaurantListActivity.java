@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -38,6 +39,11 @@ public class RestaurantListActivity extends AppCompatActivity
         else
             Log.v(LOG_TAG, "Not Connected");
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override

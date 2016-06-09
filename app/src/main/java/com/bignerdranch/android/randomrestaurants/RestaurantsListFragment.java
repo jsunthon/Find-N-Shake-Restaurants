@@ -532,8 +532,8 @@ public class RestaurantsListFragment extends Fragment {
 
             @Override
             public void onShake(int count) {
-                Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(500);
+//                Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+//                v.vibrate(500);
                 makeAPICall();
                 mRestaurantRecyclerView.startAnimation(anim);
             }

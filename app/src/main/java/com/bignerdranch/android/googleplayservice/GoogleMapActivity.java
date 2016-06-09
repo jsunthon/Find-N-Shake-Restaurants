@@ -2,6 +2,7 @@ package com.bignerdranch.android.googleplayservice;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -47,6 +48,11 @@ public class GoogleMapActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_RESTAURANT_PHONE, restaurantPhone);
         intent.putExtra(EXTRA_RESTAURANT_RATING, restaurantRating);
         return intent;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
