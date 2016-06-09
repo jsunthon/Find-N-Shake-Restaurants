@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
+        //http://www.androidwarriors.com/2015/10/tablayout-with-viewpager-android.html
         FragmentManager manager = getSupportFragmentManager();
         MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(manager, getApplicationContext());
 
@@ -88,12 +89,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
-
-        if (id == R.id.favorites){
-            startActivity(new Intent(this, FavoriteListActivity.class));
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
