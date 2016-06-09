@@ -4,8 +4,7 @@ import org.scribe.builder.api.DefaultApi10a;
 import org.scribe.model.Token;
 
 /**
- * Generic service provider for two-step OAuth10a.
- * Taken from the official Yelp api Github
+ * Credits go to https://github.com/Yelp/yelp-api/blob/master/v2/java/TwoStepOAuth.java
  */
 public class TwoStepOAuth extends DefaultApi10a {
 

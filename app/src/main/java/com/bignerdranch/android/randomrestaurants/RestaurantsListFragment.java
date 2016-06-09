@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+//Thanks to Big Nerd Ranch Guide
 public class RestaurantsListFragment extends Fragment {
 
     private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import java.io.InputStream;
 
+//With help from Big Nerd Ranch Guide
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
