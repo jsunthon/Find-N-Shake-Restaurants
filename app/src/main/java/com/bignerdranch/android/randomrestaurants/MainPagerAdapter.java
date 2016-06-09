@@ -41,7 +41,4 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
-
-
-
 }

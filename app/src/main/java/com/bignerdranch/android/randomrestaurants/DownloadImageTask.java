@@ -5,12 +5,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
-
 import java.io.InputStream;
 
-/**
- * Created by jsunthon on 6/8/2016.
- */
 public class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
