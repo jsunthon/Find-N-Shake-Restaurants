@@ -2,6 +2,7 @@ package com.bignerdranch.android.randomrestaurants;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -51,6 +52,11 @@ public class RestaurantFragment extends Fragment {
         RestaurantFragment fragment = new RestaurantFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
