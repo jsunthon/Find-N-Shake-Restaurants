@@ -42,6 +42,15 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.v(LOG_TAG, " onCreate called");
+        this.savedInstanceState = savedInstanceState;
+        buildGoogleApiClient();
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.connect();
+        else
+            Log.v(LOG_TAG, "Not Connected");
+        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
+
         mViewPager = (ViewPager) findViewById(R.id.view_pager);
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
@@ -58,14 +67,6 @@ public class MainActivity extends AppCompatActivity
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
         mTabLayout.setTabsFromPagerAdapter(mainPagerAdapter);
-        Log.v(LOG_TAG, " onCreate called");
-        this.savedInstanceState = savedInstanceState;
-        buildGoogleApiClient();
-        if (mGoogleApiClient != null)
-            mGoogleApiClient.connect();
-        else
-            Log.v(LOG_TAG, "Not Connected");
-        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
     }
 
     @Override
@@ -116,11 +117,11 @@ public class MainActivity extends AppCompatActivity
                 sharedEdit.commit();
                 Log.v(LOG_TAG, "The Current Latitude is :" + mLocation.getLatitude()
                         + "and Current Longitude is :" + mLocation.getLongitude());
-                if (savedInstanceState == null) {
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.main_act_container, new RestaurantsListFragment())
-                            .commitAllowingStateLoss();
-                }
+//                if (savedInstanceState == null) {
+//                    getSupportFragmentManager().beginTransaction()
+//                            .add(R.id.main_act_container, new RestaurantsListFragment())
+//                            .commitAllowingStateLoss();
+//                }
             }
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
@@ -135,11 +136,11 @@ public class MainActivity extends AppCompatActivity
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onConnected(null);
                 } else {
-                    if (savedInstanceState == null) {
-                        getSupportFragmentManager().beginTransaction()
-                                .add(R.id.main_act_container, new RestaurantsListFragment())
-                                .commitAllowingStateLoss();
-                    }
+//                    if (savedInstanceState == null) {
+//                        getSupportFragmentManager().beginTransaction()
+//                                .add(R.id.main_act_container, new RestaurantsListFragment())
+//                                .commitAllowingStateLoss();
+//                    }
                 }
             }
         }

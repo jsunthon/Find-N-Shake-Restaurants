@@ -147,8 +147,7 @@ public class RestaurantsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.v(LOG_TAG_RESTAURANT_LIST, "onCreateView called");
 
-        View view = inflater.inflate(R.layout.fragment_restaurant_list, container, false);
-
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_restaurant_list, null);
         mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurant_recycler_view);
         mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRestaurantRecyclerView

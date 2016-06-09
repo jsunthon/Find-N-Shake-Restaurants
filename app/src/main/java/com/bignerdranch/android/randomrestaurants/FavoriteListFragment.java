@@ -65,9 +65,9 @@ public class FavoriteListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
 
-        mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.favorite_restaurant_recycler_view);
+        View v = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_favorite_list, null);
+        mRestaurantRecyclerView = (RecyclerView) v.findViewById(R.id.favorite_restaurant_recycler_view);
         mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRestaurantRecyclerView
                 .addItemDecoration(
@@ -77,7 +77,7 @@ public class FavoriteListFragment extends Fragment {
                                 .build());
         retrieveUI();
         Log.v(LOG_TAG, "View created");
-        return view;
+        return v;
     }
 
     private void retrieveUI() {
