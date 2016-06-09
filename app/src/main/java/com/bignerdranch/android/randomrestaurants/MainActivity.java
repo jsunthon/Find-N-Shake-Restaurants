@@ -18,7 +18,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -50,24 +49,6 @@ public class MainActivity extends AppCompatActivity
         else
             Log.v(LOG_TAG, "Not Connected");
         PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
-
-        mViewPager = (ViewPager) findViewById(R.id.view_pager);
-        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
-
-        //http://www.androidwarriors.com/2015/10/tablayout-with-viewpager-android.html
-        FragmentManager manager = getSupportFragmentManager();
-        MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(manager, getApplicationContext());
-
-        //hook up the pager adapater with the pager itself.
-        mViewPager.setAdapter(mainPagerAdapter);
-
-        // hook up the tablayout with the pager
-        mTabLayout.setupWithViewPager(mViewPager);
-
-        // adding functionality to tab and viewpager to manage each other when a page is changed or when a tab is selected
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
-
-        mTabLayout.setTabsFromPagerAdapter(mainPagerAdapter);
     }
 
     @Override
@@ -112,11 +93,7 @@ public class MainActivity extends AppCompatActivity
                 sharedEdit.commit();
                 Log.v(LOG_TAG, "The Current Latitude is :" + mLocation.getLatitude()
                         + "and Current Longitude is :" + mLocation.getLongitude());
-//                if (savedInstanceState == null) {
-//                    getSupportFragmentManager().beginTransaction()
-//                            .add(R.id.main_act_container, new RestaurantsListFragment())
-//                            .commitAllowingStateLoss();
-//                }
+                setUpGUI();
             }
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 200);
@@ -131,14 +108,30 @@ public class MainActivity extends AppCompatActivity
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     onConnected(null);
                 } else {
-//                    if (savedInstanceState == null) {
-//                        getSupportFragmentManager().beginTransaction()
-//                                .add(R.id.main_act_container, new RestaurantsListFragment())
-//                                .commitAllowingStateLoss();
-//                    }
+                    setUpGUI();
                 }
             }
         }
+    }
+
+    private void setUpGUI() {
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
+        mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+
+        //http://www.androidwarriors.com/2015/10/tablayout-with-viewpager-android.html
+        FragmentManager manager = getSupportFragmentManager();
+        MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(manager, getApplicationContext());
+
+        //hook up the pager adapater with the pager itself.
+        mViewPager.setAdapter(mainPagerAdapter);
+
+        // hook up the tablayout with the pager
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        // adding functionality to tab and viewpager to manage each other when a page is changed or when a tab is selected
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+
+        mTabLayout.setTabsFromPagerAdapter(mainPagerAdapter);
     }
 
     @Override
