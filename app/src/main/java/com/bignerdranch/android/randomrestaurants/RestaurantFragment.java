@@ -1,18 +1,13 @@
 package com.bignerdranch.android.randomrestaurants;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,15 +18,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-
 import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
-
-import java.io.InputStream;
 import java.util.UUID;
 
 /**
@@ -41,14 +31,14 @@ public class RestaurantFragment extends Fragment {
 
     private Restaurant mRestaurant;
     private final String LOG_TAG = getClass().getSimpleName();
+    private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
+    private static final String DIALOG_IMG = "DialogImg";
+    private static final String ARG_RESTAURANT_ID = "restaurant_id";
     private Button mShowMap;
     private Button mShowDirections;
     private ImageView mMainImgView;
     private ImageView mSnippetImgView;
     private ShareActionProvider mShareActionProvider;
-    private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
-    private static final String DIALOG_IMG = "DialogImg";
-    public static final String ARG_RESTAURANT_ID = "restaurant_id";
 
     public RestaurantFragment() {
         setHasOptionsMenu(true);
@@ -152,7 +142,7 @@ public class RestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getFragmentManager();
-                ImageViewFragment imageViewFragment = ImageViewFragment.newInstance(mRestaurant.getName(), mRestaurant.getImageUrl());
+                ImageViewFragment imageViewFragment = ImageViewFragment.newInstance(mRestaurant.getName() + " Food Image", mRestaurant.getImageUrl());
                 imageViewFragment.show(manager, DIALOG_IMG);
             }
         });
@@ -162,7 +152,7 @@ public class RestaurantFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentManager manager = getFragmentManager();
-                ImageViewFragment imageViewFragment = ImageViewFragment.newInstance(mRestaurant.getName(), mRestaurant.getSnippetImageUrl());
+                ImageViewFragment imageViewFragment = ImageViewFragment.newInstance(mRestaurant.getName() + " Snippet Image", mRestaurant.getSnippetImageUrl());
                 imageViewFragment.show(manager, DIALOG_IMG);
             }
         });

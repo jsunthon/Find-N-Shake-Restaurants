@@ -47,6 +47,6 @@ public class ImageViewFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setView(mFoodImgView)
                 .setTitle(restaurantName)
-                .setPositiveButton(android.R.string.ok, null).create();
+                .create();
     }
 }
