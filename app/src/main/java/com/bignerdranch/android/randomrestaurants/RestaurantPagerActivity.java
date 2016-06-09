@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -32,9 +33,7 @@ import com.google.android.gms.location.LocationServices;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by jsunthon on 6/7/2016.
- */
+// Thanks to Big Nerd Ranch Guide
 public class RestaurantPagerActivity extends AppCompatActivity {
 
     private final String LOG_TAG = RestaurantPagerActivity.class.getSimpleName();
@@ -91,6 +90,8 @@ public class RestaurantPagerActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //maybe do this in the future.
+//        getMenuInflater().inflate(R.menu.favorites, menu);
         getMenuInflater().inflate(R.menu.detail, menu);
         return true;
     }
@@ -103,6 +104,11 @@ public class RestaurantPagerActivity extends AppCompatActivity {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
+//        if (id == R.id.favorites) {
+//            //navigate back to MainActivit the parent.
+//            NavUtils.navigateUpFromSameTask(this);
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 }

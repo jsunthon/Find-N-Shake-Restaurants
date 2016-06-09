@@ -13,9 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -38,8 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import android.os.Vibrator;
 
+//Thanks to Big Nerd Ranch Guide
 public class RestaurantsListFragment extends Fragment {
 
     private final String LOG_TAG_FETCH_TASK = FetchRestaurantsTask.class.getSimpleName();
@@ -147,8 +144,7 @@ public class RestaurantsListFragment extends Fragment {
                              Bundle savedInstanceState) {
         Log.v(LOG_TAG_RESTAURANT_LIST, "onCreateView called");
 
-        View view = inflater.inflate(R.layout.fragment_restaurant_list, container, false);
-
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_restaurant_list, null);
         mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurant_recycler_view);
         mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRestaurantRecyclerView
@@ -181,21 +177,6 @@ public class RestaurantsListFragment extends Fragment {
         super.onPause();
         Log.v(LOG_TAG_RESTAURANT_LIST, "On pause called");
     }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.restaurant_list_fragment, menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        if (id == R.id.action_refresh) {
-//            makeAPICall();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     private void makeAPICall() {
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
@@ -532,8 +513,6 @@ public class RestaurantsListFragment extends Fragment {
 
             @Override
             public void onShake(int count) {
-//                Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
-//                v.vibrate(500);
                 makeAPICall();
                 mRestaurantRecyclerView.startAnimation(anim);
             }

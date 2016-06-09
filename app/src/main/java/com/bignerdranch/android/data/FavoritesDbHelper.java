@@ -1,12 +1,10 @@
 package com.bignerdranch.android.data;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import com.bignerdranch.android.models.Restaurant;
 
 public class FavoritesDbHelper extends SQLiteOpenHelper {

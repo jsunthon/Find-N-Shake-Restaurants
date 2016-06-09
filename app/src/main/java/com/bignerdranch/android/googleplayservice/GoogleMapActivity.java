@@ -13,7 +13,7 @@ import com.bignerdranch.android.randomrestaurants.R;
 import com.bignerdranch.android.randomrestaurants.SettingsActivity;
 
 /**
- * Created by jsunthon on 5/11/2016.
+ * Based off Big Nerd Ranch Guide
  */
 public class GoogleMapActivity extends AppCompatActivity {
 

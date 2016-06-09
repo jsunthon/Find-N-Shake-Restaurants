@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-
+// thanks to http://www.androidwarriors.com/2015/10/tablayout-with-viewpager-android.html
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
     private Context mContext;
@@ -42,5 +42,4 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
-
 }
