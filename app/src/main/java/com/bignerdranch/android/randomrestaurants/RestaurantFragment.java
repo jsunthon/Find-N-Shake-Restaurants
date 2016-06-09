@@ -36,6 +36,7 @@ public class RestaurantFragment extends Fragment {
     private final String LOG_TAG = getClass().getSimpleName();
     private Button mShowMap;
     private Button mShowDirections;
+    private Button mFavorite;
     private ShareActionProvider mShareActionProvider;
     private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
     public static final String ARG_RESTAURANT_ID = "restaurant_id";
@@ -86,6 +87,7 @@ public class RestaurantFragment extends Fragment {
 
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
+        mFavorite = (Button) rootView.findViewById(R.id.favorite);
 
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
         Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", "0"));
@@ -128,6 +130,13 @@ public class RestaurantFragment extends Fragment {
             });
 
         }
+
+        mFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Add to favotires
+            }
+        });
 
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(mRestaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(mRestaurant.getAddress());
