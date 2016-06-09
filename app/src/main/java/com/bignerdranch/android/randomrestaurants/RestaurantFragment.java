@@ -3,8 +3,6 @@ package com.bignerdranch.android.randomrestaurants;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -22,16 +20,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bignerdranch.android.data.FavoritesDbHelper;
 import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
 import java.util.UUID;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+// with help from Big Nerd Ranch Guide
 public class RestaurantFragment extends Fragment {
 
     private Restaurant mRestaurant;

@@ -15,7 +15,6 @@
  */
 package com.bignerdranch.android.randomrestaurants;
 
-
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -23,14 +22,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
+// Based off of settingsactivity from https://github.com/udacity/Sunshine-Version-2
 public class SettingsActivity extends PreferenceActivity
        implements Preference.OnPreferenceChangeListener{
     private AppCompatDelegate mDelegate;
