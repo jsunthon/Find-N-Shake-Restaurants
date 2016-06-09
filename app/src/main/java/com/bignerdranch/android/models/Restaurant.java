@@ -19,6 +19,10 @@ public class Restaurant {
     private double latitude;
     private double longitude;
 
+    public Restaurant(){
+
+    }
+
     public Restaurant(String name, String phone, double rating,
                       String address, String imageUrl,
                       String snippetImageUrl, String ratingUrl,
