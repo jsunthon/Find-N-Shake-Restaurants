@@ -8,11 +8,17 @@ import android.view.MenuItem;
 
 
 public class FavoriteListActivity extends AppCompatActivity {
+    
+    private final String FAVORITELISTFRAGMENT_TAG = "FLFTAG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        if (savedInstanceState == null){
+            getSupportFragmentManager().beginTransaction()
+                .add(R.id.container, new FavoriteListFragment(), FAVORITELISTFRAGMENT_TAG).commit();
+        }
     }
 
     @Override
