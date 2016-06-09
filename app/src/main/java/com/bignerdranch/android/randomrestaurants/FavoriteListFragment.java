@@ -67,7 +67,7 @@ public class FavoriteListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_favorite_list, container, false);
 
-        mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.restaurant_recycler_view);
+        mRestaurantRecyclerView = (RecyclerView) view.findViewById(R.id.favorite_restaurant_recycler_view);
         mRestaurantRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRestaurantRecyclerView
                 .addItemDecoration(
@@ -76,6 +76,7 @@ public class FavoriteListFragment extends Fragment {
                                 .sizeResId(R.dimen.divider)
                                 .build());
         retrieveUI();
+        Log.v(LOG_TAG, "View created");
         return view;
     }
 
@@ -93,8 +94,8 @@ public class FavoriteListFragment extends Fragment {
         public RestaurantHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            mRestaurantNameTextView = (TextView) itemView.findViewById(R.id.list_item_restaurant_textview);
-            mRestaurantCategoryTextView = (TextView) itemView.findViewById(R.id.restaurant_category_textview);
+            mRestaurantNameTextView = (TextView) itemView.findViewById(R.id.list_item_favorite_restaurant_textview);
+            mRestaurantCategoryTextView = (TextView) itemView.findViewById(R.id.favorite_restaurant_category_textview);
         }
 
         public void bindRestaurant(Restaurant restaurant) {
@@ -121,7 +122,7 @@ public class FavoriteListFragment extends Fragment {
         @Override
         public RestaurantHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(R.layout.list_item_restaurant, parent, false);
+            View view = layoutInflater.inflate(R.layout.list_item_favorite_restaurant, parent, false);
             return new RestaurantHolder(view);
         }
 

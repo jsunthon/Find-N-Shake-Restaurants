@@ -33,7 +33,7 @@ public class RestaurantListActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_random_list);
         this.savedInstanceState = savedInstanceState;
         buildGoogleApiClient();
         if (mGoogleApiClient != null)
@@ -99,7 +99,7 @@ public class RestaurantListActivity extends AppCompatActivity
                         + "and Current Longitude is :" + mLocation.getLongitude());
                 if (savedInstanceState == null) {
                     getSupportFragmentManager().beginTransaction()
-                            .add(R.id.container, new RestaurantsListFragment())
+                            .add(R.id.random_act_container, new RestaurantsListFragment())
                             .commitAllowingStateLoss();
                 }
             }
@@ -118,7 +118,7 @@ public class RestaurantListActivity extends AppCompatActivity
                 } else {
                     if (savedInstanceState == null) {
                         getSupportFragmentManager().beginTransaction()
-                                .add(R.id.container, new RestaurantsListFragment())
+                                .add(R.id.random_act_container, new RestaurantsListFragment())
                                 .commitAllowingStateLoss();
                     }
                 }
