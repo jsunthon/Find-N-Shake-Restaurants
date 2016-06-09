@@ -12,7 +12,12 @@ public class FavoriteListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.activity_favorite_list);
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.favorite_act_container, new FavoriteListFragment())
+                    .commit();
+        }
     }
 
     @Override
