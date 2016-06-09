@@ -38,4 +38,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:9.0.2'
     compile 'com.google.android.gms:play-services-location:9.0.2'
     compile 'com.yqritc:recyclerview-flexibledivider:1.2.9'
+    compile 'com.joooonho:selectableroundedimageview:1.0.1'
 }
