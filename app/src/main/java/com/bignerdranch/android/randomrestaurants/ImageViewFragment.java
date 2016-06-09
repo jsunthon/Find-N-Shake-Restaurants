@@ -34,6 +34,8 @@ public class ImageViewFragment extends DialogFragment {
         View v = LayoutInflater.from(getActivity()).inflate(R.layout.view_food, null);
 
         mFoodImgView = (ImageView) v.findViewById(R.id.food_img_view);
+
+//        http://stackoverflow.com/questions/4668001/android-stretch-image-in-imageview-to-fit-screen
         mFoodImgView.setAdjustViewBounds(true);
         mFoodImgView.setScaleType(ImageView.ScaleType.FIT_XY);
         new DownloadImageTask(mFoodImgView)
