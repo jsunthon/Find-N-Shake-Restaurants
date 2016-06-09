@@ -121,7 +121,7 @@ public class FavoriteListFragment extends Fragment {
         @Override
         public RestaurantHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
-            View view = layoutInflater.inflate(R.layout.fragment_favorite_list, parent, false);
+            View view = layoutInflater.inflate(R.layout.list_item_restaurant, parent, false);
             return new RestaurantHolder(view);
         }
 
