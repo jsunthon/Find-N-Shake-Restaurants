@@ -467,7 +467,16 @@ public class RestaurantsListFragment extends Fragment {
 
     private int generateOffset() {
         Random random = new Random();
-        int offset = random.nextInt(10);
+        int randLimit;
+        int searchRadius = Integer.valueOf(SEARCH_RADIUS);
+        if (searchRadius <= 3) {
+            randLimit = 2;
+        } else if (searchRadius <= 8) {
+            randLimit = 6;
+        } else {
+            randLimit = 10;
+        }
+        int offset = random.nextInt(randLimit);
         return offset;
     }
 
