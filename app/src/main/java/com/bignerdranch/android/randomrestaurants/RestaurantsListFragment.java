@@ -182,20 +182,20 @@ public class RestaurantsListFragment extends Fragment {
         Log.v(LOG_TAG_RESTAURANT_LIST, "On pause called");
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.restaurant_list_fragment, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_refresh) {
-            makeAPICall();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.restaurant_list_fragment, menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//        if (id == R.id.action_refresh) {
+//            makeAPICall();
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     private void makeAPICall() {
         FetchRestaurantsTask reviewsTask = new FetchRestaurantsTask();
