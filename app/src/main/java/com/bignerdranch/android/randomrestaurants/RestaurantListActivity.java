@@ -52,6 +52,7 @@ public class RestaurantListActivity extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.favorites, menu);
         return true;
     }
 
@@ -65,6 +66,11 @@ public class RestaurantListActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             startActivity(new Intent(this, SettingsActivity.class));
+            return true;
+        }
+
+        if (id == R.id.favorites){
+            startActivity(new Intent(this, FavoriteListActivity.class));
             return true;
         }
 
