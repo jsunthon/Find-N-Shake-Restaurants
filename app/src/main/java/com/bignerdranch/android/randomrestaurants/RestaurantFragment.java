@@ -2,6 +2,9 @@ package com.bignerdranch.android.randomrestaurants;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,6 +41,8 @@ public class RestaurantFragment extends Fragment {
     private Button mShowDirections;
     private ImageView mMainImgView;
     private ImageView mSnippetImgView;
+    private Button mFavorite;
+
     private ShareActionProvider mShareActionProvider;
 
     public RestaurantFragment() {
@@ -50,6 +55,11 @@ public class RestaurantFragment extends Fragment {
         RestaurantFragment fragment = new RestaurantFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -85,6 +95,7 @@ public class RestaurantFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
+        mFavorite = (Button) rootView.findViewById(R.id.favorite);
 
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
         Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", "0"));
@@ -127,6 +138,13 @@ public class RestaurantFragment extends Fragment {
             });
 
         }
+
+        mFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Add to favotires
+            }
+        });
 
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(mRestaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(mRestaurant.getAddress());

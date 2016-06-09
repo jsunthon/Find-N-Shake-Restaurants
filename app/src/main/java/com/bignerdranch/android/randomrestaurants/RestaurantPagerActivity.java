@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -45,6 +46,11 @@ public class RestaurantPagerActivity extends AppCompatActivity {
         Intent intent = new Intent(packageContext, RestaurantPagerActivity.class);
         intent.putExtra(EXTRA_RESTAURANT_ID, restraurantId);
         return intent;
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
     }
 
     @Override
