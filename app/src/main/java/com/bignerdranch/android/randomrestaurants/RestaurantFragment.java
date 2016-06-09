@@ -22,6 +22,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bignerdranch.android.data.FavoritesDbHelper;
 import com.bignerdranch.android.googleplayservice.GoogleMapActivity;
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
@@ -42,6 +44,7 @@ public class RestaurantFragment extends Fragment {
     private ImageView mMainImgView;
     private ImageView mSnippetImgView;
     private Button mFavorite;
+    private FavoritesDbHelper db;
 
     private ShareActionProvider mShareActionProvider;
 
@@ -67,6 +70,7 @@ public class RestaurantFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID restaurantId = (UUID) getArguments().getSerializable(ARG_RESTAURANT_ID);
         mRestaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
+        db = new FavoritesDbHelper(this.getContext());
     }
 
     @Override
@@ -142,7 +146,8 @@ public class RestaurantFragment extends Fragment {
         mFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Add to favotires
+                if (db.insertData(mRestaurant))
+                    Log.v(LOG_TAG, "Inserted");
             }
         });
 
