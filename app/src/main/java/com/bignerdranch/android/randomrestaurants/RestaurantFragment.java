@@ -34,6 +34,7 @@ public class RestaurantFragment extends Fragment {
     private static final String RESTAURANT_SHARE_HASHTAG = " #RestaurantFinderApp ";
     private static final String DIALOG_IMG = "DialogImg";
     private static final String ARG_RESTAURANT_ID = "restaurant_id";
+    private static final String ARG_RESTAURANT_TYPE = "restaurant_type";
     private Button mShowMap;
     private Button mShowDirections;
     private ImageView mMainImgView;
@@ -47,9 +48,10 @@ public class RestaurantFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
-    public static RestaurantFragment newInstance(UUID restaurantId) {
+    public static RestaurantFragment newInstance(UUID restaurantId, String type) {
         Bundle args = new Bundle();
         args.putSerializable(ARG_RESTAURANT_ID, restaurantId);
+        args.putString(ARG_RESTAURANT_TYPE, type);
         RestaurantFragment fragment = new RestaurantFragment();
         fragment.setArguments(args);
         return fragment;
@@ -64,7 +66,13 @@ public class RestaurantFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID restaurantId = (UUID) getArguments().getSerializable(ARG_RESTAURANT_ID);
-        mRestaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
+        String restaurantType = getArguments().getString(ARG_RESTAURANT_TYPE);
+
+        if (restaurantType.equals("random")) {
+            mRestaurant = RestaurantLab.get(getActivity()).getRestaurant(restaurantId);
+        } else if (restaurantType.equals("favorite")) {
+            mRestaurant = RestaurantLab.get(getActivity()).getFavoriteRestaurant(restaurantId);
+        }
         db = new FavoritesDbHelper(this.getContext());
     }
 
