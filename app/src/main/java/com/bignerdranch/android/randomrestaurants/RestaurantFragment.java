@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
@@ -108,6 +109,9 @@ public class RestaurantFragment extends Fragment {
                 public void onClick(View v) {
                     if (db.insertData(mRestaurant))
                         Log.v(LOG_TAG, "Inserted");
+                    Intent intent = getActivity().getIntent();
+                    getActivity().finish();
+                    startActivity(intent);
                 }
             });
         } else{
@@ -118,6 +122,9 @@ public class RestaurantFragment extends Fragment {
                 public void onClick(View v) {
                     if (db.removeData(mRestaurant) != 0)
                         Log.v(LOG_TAG, "Removed");
+                    Intent intent = getActivity().getIntent();
+                    getActivity().finish();
+                    startActivity(intent);
                 }
             });
         }
