@@ -1,48 +1,34 @@
 package com.bignerdranch.android.randomrestaurants;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.bignerdranch.android.models.Restaurant;
 import com.bignerdranch.android.models.RestaurantLab;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import java.util.List;
 import java.util.UUID;
 
 // Thanks to Big Nerd Ranch Guide
-public class RestaurantPagerActivity extends AppCompatActivity {
+public class FavoriteRestaurantPagerActivity extends AppCompatActivity {
 
-    private final String LOG_TAG = RestaurantPagerActivity.class.getSimpleName();
+    private final String LOG_TAG = FavoriteRestaurantPagerActivity.class.getSimpleName();
     public static final String EXTRA_RESTAURANT_ID = "com.bignerdranch.android.randomrestaurants.resId";
     private ViewPager mViewPager;
-    private List<Restaurant> mRestaurants;
+    private List<Restaurant> mFavoriteRestaurants;
 
     public static Intent newIntent(Context packageContext, UUID restraurantId) {
-        Intent intent = new Intent(packageContext, RestaurantPagerActivity.class);
+        Intent intent = new Intent(packageContext, FavoriteRestaurantPagerActivity.class);
         intent.putExtra(EXTRA_RESTAURANT_ID, restraurantId);
         return intent;
     }
@@ -55,29 +41,29 @@ public class RestaurantPagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_restaurant_pager);
+        setContentView(R.layout.activity_favorite_restaurant_pager);
 
         UUID restaurantId = (UUID) getIntent().getSerializableExtra(EXTRA_RESTAURANT_ID);
-        mRestaurants = RestaurantLab.get(this).getRestaurants();
+        mFavoriteRestaurants = RestaurantLab.get(this).getFavoriteRestaurants();
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        mViewPager = (ViewPager) findViewById(R.id.activity_restaurant_pager_view_pager);
+        mViewPager = (ViewPager) findViewById(R.id.activity_favorite_restaurant_pager_view_pager);
         mViewPager.setAdapter(new FragmentStatePagerAdapter(fragmentManager) {
             @Override
             public Fragment getItem(int position) {
-                Restaurant restaurant = mRestaurants.get(position);
-                return RestaurantFragment.newInstance(restaurant.getId());
+                Restaurant restaurant = mFavoriteRestaurants.get(position);
+                return RestaurantFragment.newInstance(restaurant.getId(), "favorite");
             }
 
             @Override
             public int getCount() {
-                return mRestaurants.size();
+                return mFavoriteRestaurants.size();
             }
         });
 
-        for (int i = 0; i < mRestaurants.size(); i++) {
-            Restaurant restaurant = mRestaurants.get(i);
+        for (int i = 0; i < mFavoriteRestaurants.size(); i++) {
+            Restaurant restaurant = mFavoriteRestaurants.get(i);
             if (restaurant.getId().equals(restaurantId)) {
                 mViewPager.setCurrentItem(i);
                 break;
@@ -104,11 +90,7 @@ public class RestaurantPagerActivity extends AppCompatActivity {
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
-//        if (id == R.id.favorites) {
-//            //navigate back to MainActivit the parent.
-//            NavUtils.navigateUpFromSameTask(this);
-//            return true;
-//        }
+
         return super.onOptionsItemSelected(item);
     }
 }

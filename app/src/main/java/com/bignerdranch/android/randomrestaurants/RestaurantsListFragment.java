@@ -222,7 +222,7 @@ public class RestaurantsListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = RestaurantPagerActivity.newIntent(getActivity(), mRestaurant.getId());
+            Intent intent = RandomRestaurantPagerActivity.newIntent(getActivity(), mRestaurant.getId());
             startActivity(intent);
         }
     }
@@ -275,7 +275,7 @@ public class RestaurantsListFragment extends Fragment {
 
 
             JSONObject response = new JSONObject(yelpDataJsonStr);
-            JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
+             JSONArray businesses = response.getJSONArray(YELP_BUSINESSES);
 
             for (int i = 0; i < businesses.length(); i++) {
                 JSONObject business = businesses.getJSONObject(i);

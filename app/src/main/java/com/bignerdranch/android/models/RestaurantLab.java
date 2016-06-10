@@ -11,6 +11,7 @@ import java.util.UUID;
 public class RestaurantLab {
     private static RestaurantLab sRestaurantLab;
     private List<Restaurant> mRestaurants;
+    private List<Restaurant> mFavoriteRestaurants;
 
     public static RestaurantLab get(Context context) {
         if (sRestaurantLab == null) {
@@ -21,10 +22,15 @@ public class RestaurantLab {
 
     private RestaurantLab(Context context) {
         mRestaurants = new ArrayList<>();
+        mFavoriteRestaurants = new ArrayList<>();
     }
 
     public void addRestaurant(Restaurant r) {
         mRestaurants.add(r);
+    }
+
+    public void addFavoriteRestaurant(Restaurant r) {
+        mFavoriteRestaurants.add(r);
     }
 
     public Restaurant getRestaurant(UUID id) {
@@ -36,11 +42,28 @@ public class RestaurantLab {
         return null;
     }
 
+    public Restaurant getFavoriteRestaurant(UUID id) {
+        for (Restaurant restaurant: mFavoriteRestaurants) {
+            if (restaurant.getId().equals(id)) {
+                return restaurant;
+            }
+        }
+        return null;
+    }
+
     public List<Restaurant> getRestaurants() {
         return this.mRestaurants;
     }
 
+    public List<Restaurant> getFavoriteRestaurants() {
+        return this.mFavoriteRestaurants;
+    }
+
     public void resetRestaurants() {
         mRestaurants = new ArrayList<>();
+    }
+
+    public void resetFavoriteRestaurants() {
+        mFavoriteRestaurants = new ArrayList<>();
     }
 }
