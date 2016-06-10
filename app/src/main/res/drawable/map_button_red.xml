@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Credit to http://android-code.blogspot.com/2015/01/android-rounded-corners-button.html-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/red" />
+            <stroke android:color="@color/gray" android:width="2dp" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+</selector>
