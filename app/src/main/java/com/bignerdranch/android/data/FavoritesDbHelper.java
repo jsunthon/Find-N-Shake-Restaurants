@@ -87,7 +87,11 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
         if (c == null || c.getCount() <= 0)
             result = false;
         c.close();
-        Log.v("exists?", "" + result);
         return result;
+    }
+
+    public int removeData(Restaurant r){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME, RES_PHONE + " LIKE '%" + r.getPhone() + "%';", null);
     }
 }

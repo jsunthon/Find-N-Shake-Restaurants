@@ -98,26 +98,32 @@ public class RestaurantFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         View rootView;
         if(!db.restaurantExists(mRestaurant)) {
             rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
+            mFavorite = (Button) rootView.findViewById(R.id.favorite);
+            mFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (db.insertData(mRestaurant))
+                        Log.v(LOG_TAG, "Inserted");
+                }
+            });
         } else{
             rootView = inflater.inflate(R.layout.fragment_restaurant_favorited, container, false);
+            mFavorite = (Button) rootView.findViewById(R.id.favorite);
+            mFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (db.removeData(mRestaurant) != 0)
+                        Log.v(LOG_TAG, "Removed");
+                }
+            });
         }
 
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
-
-
-        mFavorite = (Button) rootView.findViewById(R.id.favorite);
-        mFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (db.insertData(mRestaurant))
-                    Log.v(LOG_TAG, "Inserted");
-            }
-        });
 
 
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
