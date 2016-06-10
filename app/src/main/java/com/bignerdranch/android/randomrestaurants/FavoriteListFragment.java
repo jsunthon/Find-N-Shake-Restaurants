@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import com.bignerdranch.android.data.FavoritesDbHelper;
 import com.bignerdranch.android.models.Restaurant;
+import com.bignerdranch.android.models.RestaurantLab;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,16 +23,14 @@ public class FavoriteListFragment extends Fragment {
     private final String LOG_TAG = getClass().getSimpleName();
     private RecyclerView mFavoriteRestaurantRecyclerView;
     private RestaurantAdapter mAdapter;
-    private List<Restaurant> mRestaurants = new ArrayList();
     private FavoritesDbHelper db;
-    
+    private RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         fetchFavsData();
-        Log.v(LOG_TAG, " on Create Called");
     }
 
     @Override
@@ -73,7 +71,7 @@ public class FavoriteListFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            Intent intent = RestaurantPagerActivity.newIntent(getActivity(), mRestaurant.getId());
+            Intent intent = FavoriteRestaurantPagerActivity.newIntent(getActivity(), mRestaurant.getId());
             startActivity(intent);
         }
     }
@@ -113,20 +111,21 @@ public class FavoriteListFragment extends Fragment {
     }
 
     public void refreshFavList() {
-        mRestaurants = new ArrayList<>();
         fetchFavsData();
         retrieveUI();
     }
 
     private void retrieveUI() {
-        mAdapter = new RestaurantAdapter(mRestaurants);
+        List<Restaurant> favoriteRestaurants = restaurantLab.getFavoriteRestaurants();
+        mAdapter = new RestaurantAdapter(favoriteRestaurants);
         mFavoriteRestaurantRecyclerView.setAdapter(mAdapter);
     }
 
     private void fetchFavsData() {
         db = new FavoritesDbHelper(this.getContext());
         Cursor res = db.getAllData();
-
+        RestaurantLab restaurantLab = RestaurantLab.get(getActivity());
+        restaurantLab.resetFavoriteRestaurants();
         if(res.getCount() == 0){
             //show message
         } else{
@@ -145,7 +144,7 @@ public class FavoriteListFragment extends Fragment {
                     temp.setLatitude(Double.parseDouble(res.getString(9)));
                     temp.setLongitude(Double.parseDouble(res.getString(10)));
                     temp.setCategories(res.getString(11));
-                    mRestaurants.add(temp);
+                    restaurantLab.addFavoriteRestaurant(temp);
                 } catch(Exception e){
                     Log.e(LOG_TAG, "Error");
                 }

@@ -29,7 +29,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.bignerdranch.android.randomrestaurants.RestaurantPagerActivity"
+            android:name=".RandomRestaurantPagerActivity"
+            android:label="@string/title_activity_detail"
+            android:parentActivityName="com.bignerdranch.android.randomrestaurants.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.bignerdranch.android.randomrestaurants.MainActivity"/>
+        </activity>
+        <activity
+            android:name=".FavoriteRestaurantPagerActivity"
             android:label="@string/title_activity_detail"
             android:parentActivityName="com.bignerdranch.android.randomrestaurants.MainActivity"
             android:configChanges="orientation|screenSize|keyboardHidden">
