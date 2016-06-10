@@ -25,4 +25,12 @@
         <item name="android:gravity">center</item>
         <item name="android:padding">@dimen/map_button_pad</item>
     </style>
+
+    <style name="MapButtonUnfavorite">
+        <item name="android:background">@drawable/map_button_red</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/whitesmoke</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/map_button_pad</item>
+    </style>
 </resources>
