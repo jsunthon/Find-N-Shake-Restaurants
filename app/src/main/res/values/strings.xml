@@ -77,4 +77,5 @@
     <string name="favorite">Favorite</string>
     <string name="random_page_title">Random Restaurants</string>
     <string name="favorite_page_title">Favorites</string>
+    <string name="unfavorite">Remove Favorite</string>
 </resources>

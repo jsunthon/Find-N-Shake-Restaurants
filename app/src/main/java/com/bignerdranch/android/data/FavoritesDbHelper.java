@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
 import com.bignerdranch.android.models.Restaurant;
 
 public class FavoritesDbHelper extends SQLiteOpenHelper {
@@ -75,6 +77,17 @@ public class FavoritesDbHelper extends SQLiteOpenHelper {
     public Cursor getAllData(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor result = db.rawQuery("SELECT * FROM " + TABLE_NAME + ";", null);
+        return result;
+    }
+
+    public boolean restaurantExists(Restaurant r){
+        boolean result = true;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + RES_PHONE + " LIKE '%" + r.getPhone() + "%';", null);
+        if (c == null || c.getCount() <= 0)
+            result = false;
+        c.close();
+        Log.v("exists?", "" + result);
         return result;
     }
 }

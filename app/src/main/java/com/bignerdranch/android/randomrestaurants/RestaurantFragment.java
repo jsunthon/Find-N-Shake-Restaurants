@@ -99,10 +99,26 @@ public class RestaurantFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
+        View rootView;
+        if(!db.restaurantExists(mRestaurant)) {
+            rootView = inflater.inflate(R.layout.fragment_restaurant, container, false);
+        } else{
+            rootView = inflater.inflate(R.layout.fragment_restaurant_favorited, container, false);
+        }
+
         mShowMap = (Button) rootView.findViewById(R.id.google_map_btn);
         mShowDirections = (Button) rootView.findViewById(R.id.google_map_directions);
+
+
         mFavorite = (Button) rootView.findViewById(R.id.favorite);
+        mFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (db.insertData(mRestaurant))
+                    Log.v(LOG_TAG, "Inserted");
+            }
+        });
+
 
         SharedPreferences sharedPrefs = getActivity().getSharedPreferences("location_prefs", 0);
         Double mCurrentLatitude = Double.valueOf(sharedPrefs.getString("mLatitude", "0"));
@@ -146,13 +162,7 @@ public class RestaurantFragment extends Fragment {
 
         }
 
-        mFavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (db.insertData(mRestaurant))
-                    Log.v(LOG_TAG, "Inserted");
-            }
-        });
+
 
         ((TextView) rootView.findViewById(R.id.restaurant_name_detail_text)).setText(mRestaurant.getName());
         ((TextView) rootView.findViewById(R.id.restaurant_address_detail_text)).setText(mRestaurant.getAddress());
