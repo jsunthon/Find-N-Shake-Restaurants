@@ -77,10 +77,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        Location mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-
+            Location mLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (mLocation != null) {
                 SharedPreferences sharedPrefs = getSharedPreferences("location_prefs", MODE_PRIVATE);
                 SharedPreferences.Editor sharedEdit = sharedPrefs.edit();
@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity
                     onConnected(null);
                 } else {
                     setUpGUI();
+                    Log.v(LOG_TAG,"Access Location Permission Denied");
                 }
             }
         }
