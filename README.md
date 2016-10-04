@@ -1,5 +1,5 @@
-# RandomRestaurantFinder
-Android app that finds random restaurants via the Yelp API.
+# Find-N-Shake Restaurants
+Android app that finds random restaurants via the Yelp API. Made more fun by letting the user shake for the results.
 
 ## Functionality
 * List X numbers of restaurants randomly upon shake or refresh.
